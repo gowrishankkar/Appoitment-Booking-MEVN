@@ -9,10 +9,15 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "@vvo/tzdb": "^6.7.0",
+    "axios": "^0.21.1",
     "core-js": "^2.5.7",
     "vue": "^2.6.10",
+    "vue-cookies": "^1.7.4",
     "vue-router": "^3.0.3",
-    "vuetify": "^2.4.9"
+    "vuelidate": "^0.7.6",
+    "vuetify": "^2.4.9",
+    "vuex": "^3.6.2"
   },
   "devDependencies": {
     "@babel/core": "^7.13.15",
@@ -21,7 +26,6 @@
     "@vue/cli-plugin-eslint": "^3.8.0",
     "@vue/cli-plugin-unit-mocha": "^4.5.11",
     "@vue/cli-service": "^4.5.11",
-    "@vue/eslint-config-prettier": "^4.0.1",
     "@vue/test-utils": "1.0.0-beta.29",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.2.2",
