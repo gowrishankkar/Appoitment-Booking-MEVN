@@ -1,38 +1,20 @@
 const Slot = require('../models/slots');
+const express = require('express')
+let router = express.Router()
 
-const slot_index = (req, res) => {
-  Slot.find().sort({ createdAt: -1 })
 
-}
+router.get("/", async (req, res) => {
+  try {
+      const event = await Event.find()
+      res.send('succss')
+    } catch (error) {
+      res.status(400).json({ message: error.message })
+  }
+});
 
-const slot_details = (req, res) => {
-  const id = req.params.id;
 
-}
-
-const slot_create_get = (req, res) => {
-  // res.render('create', { title: 'Create a new blog' });
-}
-
-const slot_create = (req, res) => {
-
-}
-
-const slot_delete = (req, res) => {
-  const id = req.params.id;
-  Slot.findByIdAndDelete(id)
-    .then(result => {
-      res.json({ redirect: '/blogs' });
-    })
-    .catch(err => {
-      console.log(err);
-    });
-}
 
 module.exports = {
-  slot_index, 
-  slot_details, 
-  slot_create_get, 
-  slot_create, 
-  slot_delete
+  free_slots, 
+
 }

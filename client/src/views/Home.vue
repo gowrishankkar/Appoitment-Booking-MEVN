@@ -1,11 +1,16 @@
 <template>
-  <v-container class="container" >
-    <v-flex> 
-          <!-- <v-col class="d-flex" cols="12" sm="6"> -->
-      <v-select :items="timeZoneDateset" label="Outlined style"  :search-input.sync="searchInput" outlined></v-select>
-    <!-- </v-col> -->
+  <v-container class="container">
+    <v-flex>
+      <!-- <v-col class="d-flex" cols="12" sm="6"> -->
+      <v-select
+        :items="timeZoneDateset"
+        label="Outlined style"
+        :search-input.sync="searchInput"
+        outlined
+      ></v-select>
+      <!-- </v-col> -->
       <Modal @formData="getFormData" />
-        
+      <v-btn @click="getFreeSlots">Slots</v-btn>
     </v-flex>
 
     <v-layout wrap>
@@ -13,9 +18,14 @@
         <v-date-picker v-model="picker"></v-date-picker>
 
         <!-- AM -->
-        <div >
+        <div>
           <v-card-title>AM</v-card-title>
-          <v-card max-width="144" outlined height="40%" class="time-slot-card flexcard">
+          <v-card
+            max-width="144"
+            outlined
+            height="40%"
+            class="time-slot-card flexcard"
+          >
             <v-card-text>
               <v-chip-group
                 v-model="timeSelection"
@@ -29,10 +39,14 @@
         </div>
 
         <!-- PM -->
-        <div >
+        <div>
           <v-card-title>PM</v-card-title>
-          <v-card max-width="144" outlined height="40%" class="time-slot-card flexcard">
-            
+          <v-card
+            max-width="144"
+            outlined
+            height="40%"
+            class="time-slot-card flexcard"
+          >
             <v-card-text>
               <v-chip-group
                 v-model="timeSelection"
@@ -46,7 +60,6 @@
         </div>
       </v-flex>
     </v-layout>
-
   </v-container>
 </template>
 
@@ -54,17 +67,17 @@
 import Modal from "@/components/modal.vue";
 import { getTimeZones, rawTimeZones, timeZonesNames } from "@vvo/tzdb";
 const timeZones = getTimeZones();
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapState } from "vuex";
 
 export default {
   name: "Booking",
-  components: {Modal},
+  components: { Modal },
   props: {
     msg: String,
   },
   data() {
     return {
-      searchInput: '',
+      searchInput: "",
       timeZoneDateset: timeZones,
       picker: new Date().toISOString().substr(0, 10),
       items: ["Foo", "Bar", "Fizz", "Buzz"],
@@ -89,40 +102,49 @@ export default {
       timeSelection: "",
     };
   },
-    
 
-  methods:{
-        ...mapActions(['getAllEvents', 'createEvent']),
-        getFormData(data){
-          console.log(data)
-        },
-    async fetchOtherEvents() {
-      // try {
-      //   await this.getAllEvents().then(() => {
-
-      //     console.log('yes')
-      //   });
-      // } catch (error) {
-      //   console.log('error', error)
-      // }
-      let body = {
-        Date: "123123123123",
-        Timezone: "1231asd123123123",
-      };
-      try {
-        await this.createEvent(body).then(() => {
-          console.log("post yes");
-        });
-      } catch (error) {
-        console.log("post error", error);
-      }
+  methods: {
+    ...mapActions(["getAllEvents", "createEvent", "getSlots"]),
+    getFormData(data) {
+      console.log(data);
     },
 
+    getFreeSlots(){
+      try {
+        this.getSlots().then(() => {
+
+          console.log('slots api')
+        });
+      } catch (error) {
+        console.log('error', error)
+      }
+    },
+    async fetchOtherEvents() {
+      try {
+        await this.getAllEvents().then(() => {
+
+          console.log('yes')
+        });
+      } catch (error) {
+        console.log('error', error)
+      }
+      // let body = {
+      //   Date: "123123123123",
+      //   Timezone: "1231asd123123123",
+      // };
+      // try {
+      //   await this.createEvent(body).then(() => {
+      //     console.log("post yes");
+      //   });
+      // } catch (error) {
+      //   console.log("post error", error);
+      // }
+    },
   },
   watch: {
     timeSelection(value) {
       console.log("value", value, timeZones);
-      this.fetchOtherEvents()
+      this.fetchOtherEvents();
     },
   },
 };
@@ -146,7 +168,6 @@ a {
 }
 
 .time-slot-card {
-
   overflow: scroll;
 }
 
@@ -159,10 +180,9 @@ a {
   flex: 0;
 }
 
-.container{
+.container {
   /* height: 55%; */
 }
-
 </style>
 
 
