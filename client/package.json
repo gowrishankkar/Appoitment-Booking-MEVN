@@ -13,8 +13,11 @@
     "axios": "^0.21.1",
     "core-js": "^2.5.7",
     "vue": "^2.6.10",
+    "vue-cookies": "^1.7.4",
     "vue-router": "^3.0.3",
-    "vuetify": "^2.4.9"
+    "vuelidate": "^0.7.6",
+    "vuetify": "^2.4.9",
+    "vuex": "^3.6.2"
   },
   "devDependencies": {
     "@babel/core": "^7.13.15",
