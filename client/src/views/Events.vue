@@ -37,23 +37,19 @@
           </v-date-picker>
         </v-menu>
       </v-col>
-
     </v-row>
-    
-      <v-container>
 
-           <div>
+    <v-container>
+      <div>
         <v-data-table
           dense
           :headers="headers"
           :items="events"
           item-key="name"
           class="elevation-1"
-        
         ></v-data-table>
       </div>
-
-  </v-container>
+    </v-container>
   </div>
   <!-- <v-container class="container">
     <v-flex> -->
@@ -100,11 +96,16 @@ export default {
     ...mapActions(["getAllEvents", "getEventsInRange"]),
     async getSelectedRange(date) {
       console.log("date", date);
-       try {
-        const payload = {startDate: date[0], endDate: date[1]}
+      try {
+        const payload = { startDate: date[0], endDate: date[1] };
         await this.getEventsInRange(payload).then((response) => {
+          response.map((event, index) => {
+            event.date = moment(event.Date).format("DD-MM-YYYY");
+            event.time = moment(event.Date).format("hh:mm A");
+            event.rowIndex = index;
+          });
           console.log("yes getEventsInRange", response);
-          // this.events = response
+          this.events = response;
         });
       } catch (error) {
         console.log("error", error);
@@ -122,7 +123,7 @@ export default {
           });
           this.$forceUpdate();
           console.log("yes", response);
-          this.events = response
+          this.events = response;
         });
       } catch (error) {
         console.log("error", error);
