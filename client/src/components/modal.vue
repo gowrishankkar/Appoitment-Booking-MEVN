@@ -2,7 +2,14 @@
   <div class="text-center">
     <v-dialog v-model="dialog" width="500">
       <template v-slot:activator="{ on, attrs }">
-        <v-btn color="red lighten-2" dark v-bind="attrs" v-on="on">
+        <v-btn
+          color="primary lighten-2"
+          dark
+          v-bind="attrs"
+          v-on="on"
+          :disabled="btnDisabled"
+          :class="{ disableColor: btnDisabled }"
+        >
           Book On Selected Date
         </v-btn>
       </template>
@@ -31,7 +38,6 @@
             @blur="$v.email.$touch()"
           ></v-text-field>
 
-
           <v-btn class="mr-4" @click="submit"> submit </v-btn>
           <v-btn @click="clear"> clear </v-btn>
         </form>
@@ -41,63 +47,98 @@
 </template>
 
 <script>
- import { validationMixin } from 'vuelidate'
-  import { required, maxLength, email } from 'vuelidate/lib/validators'
+import { validationMixin } from "vuelidate";
+import { required, maxLength, email } from "vuelidate/lib/validators";
+import { mapActions, mapState } from "vuex";
 
 export default {
+  props: ["timeChip", "timeZone"],
 
-     mixins: [validationMixin],
+  mixins: [validationMixin],
 
-    validations: {
-      name: { required, maxLength: maxLength(10) },
-      email: { required, email },
-      select: { required },
+  validations: {
+    name: { required, maxLength: maxLength(10) },
+    email: { required, email },
+  },
+
+  watch: {
+    timeChip(value) {
+      if (value) {
+        this.btnDisabled = false;
+      } else {
+        this.btnDisabled = true;
+      }
     },
-
+  },
   data() {
     return {
+      btnDisabled: true,
       dialog: false,
-      name: '',
-      email: '',
-      select: null,
-     
+      name: "",
+      email: "",
     };
   },
   methods: {
-    submitFormData() {},
-    submit () {
-        this.$v.$touch()
-        let formData = {
-            name: this.name,
-            email: this.email
-        }
-        this.$emit('formData', formData)
-        
-      },
-      clear () {
-        this.$v.$reset()
-        this.name = ''
-        this.email = ''
-        this.select = null
-        this.checkbox = false
-      },
-  },
-      computed: {
+    ...mapActions(["createEvent"]),
+    submit() {
+      const V = this.$v;
+      this.$v.$touch();
 
-      nameErrors () {
-        const errors = []
-        if (!this.$v.name.$dirty) return errors
-        !this.$v.name.maxLength && errors.push('Name must be at most 10 characters long')
-        !this.$v.name.required && errors.push('Name is required.')
-        return errors
-      },
-      emailErrors () {
-        const errors = []
-        if (!this.$v.email.$dirty) return errors
-        !this.$v.email.email && errors.push('Must be valid e-mail')
-        !this.$v.email.required && errors.push('E-mail is required')
-        return errors
-      },
+      if (!V.$error) {
+        this.createEventFn(this.name, this.email);
+        console.log("Form successfully submitted.");
+      } else {
+        console.log("Form failed validation");
+      }
     },
+    clear() {
+      this.$v.$reset();
+      this.name = "";
+      this.email = "";
+    },
+    async createEventFn(name, email) {
+      let body = {
+        Date: this.timeChip,
+        Timezone: this.timeZone,
+        Name: name,
+        Email: email,
+      };
+      console.log("body", body);
+      try {
+        await this.createEvent(body).then(() => {
+          console.log("post yes");
+        });
+      } catch (error) {
+        console.log("post error", error);
+      }
+    },
+  },
+  computed: {
+    nameErrors() {
+      const errors = [];
+      if (!this.$v.name.$dirty) return errors;
+      !this.$v.name.maxLength &&
+        errors.push("Name must be at most 10 characters long");
+      !this.$v.name.required && errors.push("Name is required.");
+      return errors;
+    },
+    emailErrors() {
+      const errors = [];
+      if (!this.$v.email.$dirty) return errors;
+      !this.$v.email.email && errors.push("Must be valid e-mail");
+      !this.$v.email.required && errors.push("E-mail is required");
+      return errors;
+    },
+  },
 };
 </script>
+
+<style  scoped>
+::v-deep .theme--dark.v-btn.v-btn--disabled.v-btn--has-bg {
+  background-color: green;
+}
+
+.disableColor {
+  background-color: green !important;
+}
+</style>

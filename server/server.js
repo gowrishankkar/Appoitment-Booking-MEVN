@@ -7,6 +7,7 @@ const mongoose = require("mongoose");
 const app = express();
 
 const events = require("./routes/events");
+const slots = require("./routes/slots");
 
 // parse env variables
 // require('dotenv').config();
@@ -36,15 +37,9 @@ app.use(cors());
 // Defining route middleware
 
 app.use("/events", events);
+app.use("/slots", slots);
 
-app.get('/', async (req, res) => {
-    try {
-        res.send('Hello World')
-        console.log(`Listening On http://localhost:${port}/`);
-    } catch (err) {
-        console.log(err)
-    }
-  })
+
 
 
 

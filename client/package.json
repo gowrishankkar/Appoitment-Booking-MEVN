@@ -12,9 +12,12 @@
     "@vvo/tzdb": "^6.7.0",
     "axios": "^0.21.1",
     "core-js": "^2.5.7",
+    "moment": "^2.29.1",
+    "timezones-list": "^2.1.1",
     "vue": "^2.6.10",
     "vue-cookies": "^1.7.4",
     "vue-router": "^3.0.3",
+    "vuejs-datepicker": "^1.6.2",
     "vuelidate": "^0.7.6",
     "vuetify": "^2.4.9",
     "vuex": "^3.6.2"

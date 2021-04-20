@@ -7,7 +7,9 @@ router.post("/", async (req, res) => {
     console.log(' req.body',  req.body)
     const event = new Event({
         Date: req.body.Date,
-        Timezone: req.body.Timezone
+        Timezone: req.body.Timezone,
+        Name: req.body.Name,
+        Email: req.body.Email
     })
 
     try {

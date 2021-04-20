@@ -14,9 +14,12 @@
     "concurrently": "^5.0.2",
     "config": "^3.3.6",
     "cors": "^2.8.4",
+    "dates-between": "^1.1.0",
     "dotenv": "^8.2.0",
     "express": "^4.16.3",
-    "mongoose": "^5.8.3"
+    "moment": "^2.29.1",
+    "mongoose": "^5.8.3",
+    "time-slotter": "^1.0.10"
   },
   "devDependencies": {
     "nodemon": "^1.18.3",
