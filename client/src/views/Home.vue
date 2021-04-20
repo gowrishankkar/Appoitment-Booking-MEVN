@@ -1,62 +1,60 @@
 <template>
   <v-container class="container">
     <v-flex>
-      <!-- <v-col class="d-flex" cols="12" sm="6"> -->
-      <v-select
-        :items="timeZoneDateset"
-        label="Outlined style"
-        :search-input.sync="searchInput"
-        outlined
-      ></v-select>
-      <!-- </v-col> -->
-      <Modal @formData="getFormData" />
+      <v-row>
+        <v-col cols="12" md="6">
+          <v-autocomplete
+            max-width="144"
+            :items="
+              timeZoneDateset.map((timezone) => {
+                return timezone.name;
+              })
+            "
+            @change="setTimeZone($event)"
+            dense
+            filled
+            label="Filled"
+          ></v-autocomplete>
+        </v-col>
+        <v-col cols="12" md="6">
+          <Modal :timeChip="timeSelection" :timeZone="userTimeZone" />
+        </v-col>
+      </v-row>
+
       <v-btn @click="getFreeSlots">Slots</v-btn>
     </v-flex>
 
     <v-layout wrap>
       <v-flex row class="justify-space-around">
-        <v-date-picker v-model="picker"></v-date-picker>
+        <v-date-picker
+          v-model="picker"
+          @change="dateChange"
+          :allowed-dates="getAllowedDates"
+          min="2021-04-15"
+        ></v-date-picker>
 
         <!-- AM -->
         <div>
-          <v-card-title>AM</v-card-title>
-          <v-card
-            max-width="144"
-            outlined
-            height="40%"
-            class="time-slot-card flexcard"
-          >
-            <v-card-text>
-              <v-chip-group
-                v-model="timeSelection"
-                active-class="deep-purple accent-4 white--text"
-                column
-              >
-                <v-chip v-for="fruit in time" :key="fruit">{{ fruit }}</v-chip>
-              </v-chip-group>
-            </v-card-text>
-          </v-card>
-        </div>
+          <v-sheet elevation="10" rounded="xl">
+            <v-sheet class="pa-1 primary text-right" dark rounded="t-xl"
+              ><v-card-title>Available Slots</v-card-title>
+            </v-sheet>
 
-        <!-- PM -->
-        <div>
-          <v-card-title>PM</v-card-title>
-          <v-card
-            max-width="144"
-            outlined
-            height="40%"
-            class="time-slot-card flexcard"
-          >
-            <v-card-text>
-              <v-chip-group
-                v-model="timeSelection"
-                active-class="deep-purple accent-4 white--text"
-                column
-              >
-                <v-chip v-for="fruit in time" :key="fruit">{{ fruit }}</v-chip>
-              </v-chip-group>
-            </v-card-text>
-          </v-card>
+            <div class="pa-2 flexcard">
+              <v-card-text>
+                <v-chip-group
+                  v-model="timeChip"
+                  active-class="deep-purple accent-4 white--text"
+                  column
+                  @change="selectTime($event)"
+                >
+                  <v-chip v-for="(timeS,i ) in time" :key="i">{{
+                    timeS
+                  }}</v-chip>
+                </v-chip-group>
+              </v-card-text>
+            </div>
+          </v-sheet>
         </div>
       </v-flex>
     </v-layout>
@@ -65,6 +63,7 @@
 
 <script>
 import Modal from "@/components/modal.vue";
+import moment from "moment";
 import { getTimeZones, rawTimeZones, timeZonesNames } from "@vvo/tzdb";
 const timeZones = getTimeZones();
 import { mapActions, mapState } from "vuex";
@@ -77,74 +76,70 @@ export default {
   },
   data() {
     return {
+      timeChip:'',
       searchInput: "",
       timeZoneDateset: timeZones,
+      userTimeZone : '',
       picker: new Date().toISOString().substr(0, 10),
       items: ["Foo", "Bar", "Fizz", "Buzz"],
-      time: [
-        "12:00 AM",
-        "12:30 AM",
-        "1:00 AM",
-        "1:30 AM",
-        "12:00 PM",
-        "12:30 PM",
-        "1:00 PM",
-        "1:30 PM",
-        "2:00 AM",
-        "2:30 AM",
-        "3:00 AM",
-        "3:30 AM",
-        "4:00 PM",
-        "4:30 PM",
-        "5:00 PM",
-        "5:30 PM",
-      ],
+      slotDates: [],
+      freeSlots: {},
+      time: [],
       timeSelection: "",
     };
   },
 
   methods: {
     ...mapActions(["getAllEvents", "createEvent", "getSlots"]),
-    getFormData(data) {
-      console.log(data);
+    setTimeZone(timezone){
+      console.log(timezone)
+      this.userTimeZone = timezone;
+    },
+    getAllowedDates(val) {
+      if (this.slotDates.indexOf(val) !== -1) {
+        return true;
+      } else {
+        return false;
+      }
+      this.$forceUpdate();
+    },
+    selectTime(time){
+      this.timeSelection = this.freeSlots[this.picker].slots[time]
+        console.log('change', moment(this.timeSelection).format("DD-MM-YYYY hh:mm A"))
+    },
+    dateChange() {
+      this.time = [];
+      this.freeSlots[this.picker].slots.map((slot) => {
+        this.time.push(moment(slot).format("hh:mm A"));
+      });
     },
 
-    getFreeSlots(){
+    getFreeSlots() {
+      this.fetchOtherEvents()
       try {
-        this.getSlots().then(() => {
-
-          console.log('slots api')
+        this.getSlots().then((response) => {
+          // console.log("slots api", response);
+          this.freeSlots = response;
+          this.slotDates = Object.keys(response);
         });
       } catch (error) {
-        console.log('error', error)
+        console.log("error", error);
       }
     },
     async fetchOtherEvents() {
       try {
         await this.getAllEvents().then(() => {
-
-          console.log('yes')
+          console.log("yes");
         });
       } catch (error) {
-        console.log('error', error)
+        console.log("error", error);
       }
-      // let body = {
-      //   Date: "123123123123",
-      //   Timezone: "1231asd123123123",
-      // };
-      // try {
-      //   await this.createEvent(body).then(() => {
-      //     console.log("post yes");
-      //   });
-      // } catch (error) {
-      //   console.log("post error", error);
-      // }
     },
   },
   watch: {
     timeSelection(value) {
-      console.log("value", value, timeZones);
-      this.fetchOtherEvents();
+      // console.log("value", value);
+      // this.fetchOtherEvents();
     },
   },
 };
@@ -174,6 +169,8 @@ a {
 .flexcard {
   display: flex;
   flex-direction: column;
+  width: 500px;
+  height: 250px;
 }
 
 .flexcard .v-toolbar {

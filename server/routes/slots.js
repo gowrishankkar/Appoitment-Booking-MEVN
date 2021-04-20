@@ -27,7 +27,7 @@ router.get("/", async (req, res) => {
             allSlots.push(moment(date.setHours(splitSlot[0], splitSlot[1], 0)))
 
         })
-      freeSlots[moment(date).format("MM/DD/YYYY")] = {slots : allSlots};
+      freeSlots[moment(date).format("YYYY-MM-DD")] = {slots : allSlots};
     }
     console.log(freeSlots)
     res.send(freeSlots);

@@ -17,11 +17,8 @@ export default {
   },
   actions: {
     async getSlots({ commit }) {
-      console.log("slot store");
       try {
         const { data } = await axios.get(`slots/`);
-        console.log('slots data', data)
-
         return data;
       } catch (err) {
         console.log("err", err);
