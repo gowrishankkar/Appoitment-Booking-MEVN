@@ -13,7 +13,7 @@
             @change="setTimeZone($event)"
             dense
             filled
-            label="Filled"
+            label="Timezone"
           ></v-autocomplete>
         </v-col>
         <v-col cols="12" md="6">
@@ -27,9 +27,12 @@
     <v-layout wrap>
       <v-flex row class="justify-space-around">
         <v-date-picker
+          ref="picker"  :picker-date.sync="picker"
           v-model="picker"
-          @change="dateChange"
+          @change="dateChange($event)"
           :allowed-dates="getAllowedDates"
+          elevation="15"
+          
           min="2021-04-15"
         ></v-date-picker>
 
@@ -107,7 +110,9 @@ export default {
       this.timeSelection = this.freeSlots[this.picker].slots[time]
         console.log('change', moment(this.timeSelection).format("DD-MM-YYYY hh:mm A"))
     },
-    dateChange() {
+    dateChange(date) {
+      console.log('date',date)
+      this.timeChip=""
       this.time = [];
       this.freeSlots[this.picker].slots.map((slot) => {
         this.time.push(moment(slot).format("hh:mm A"));
@@ -115,7 +120,6 @@ export default {
     },
 
     getFreeSlots() {
-      this.fetchOtherEvents()
       try {
         this.getSlots().then((response) => {
           // console.log("slots api", response);
@@ -126,17 +130,16 @@ export default {
         console.log("error", error);
       }
     },
-    async fetchOtherEvents() {
-      try {
-        await this.getAllEvents().then(() => {
-          console.log("yes");
-        });
-      } catch (error) {
-        console.log("error", error);
-      }
-    },
+
+  },
+  
+  created(){
+    console.log('picker', this.picker)
   },
   watch: {
+    picker(value){
+      console.log('picker', value)
+    },
     timeSelection(value) {
       // console.log("value", value);
       // this.fetchOtherEvents();
@@ -177,9 +180,6 @@ a {
   flex: 0;
 }
 
-.container {
-  /* height: 55%; */
-}
 </style>
 
 

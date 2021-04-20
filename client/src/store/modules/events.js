@@ -15,9 +15,7 @@ export default {
     };
   },
   getters: {},
-  mutations: {
-   
-  },
+  mutations: {},
   actions: {
     async getAllEvents({ commit }) {
       console.log("called api");
@@ -29,23 +27,28 @@ export default {
         console.log("err", err);
         return err;
       }
-
-      // commit('refreshLearnerProfilePic', data.user);
     },
     async createEvent({ commit }, payload) {
-        console.log("called post api");
-        try {
-          const { data } = await axios.post(`events/`, payload);
-    
-          return data;
-        } catch (err) {
-          console.log("err", err);
-          return err;
-        }
-    
-        // commit('refreshLearnerProfilePic', data.user);
-      },
-  },
-  
+      console.log("called post api");
+      try {
+        const { data } = await axios.post(`events/`, payload);
 
+        return data;
+      } catch (err) {
+        console.log("err", err);
+        return err;
+      }
+    },
+    async getEventsInRange({ commit }, payload) {
+      console.log("called event range api");
+      try {
+        const { data } = await axios.get(`events/range?startDate=${payload.startDate}&endDate=${payload.endDate}`, payload);
+
+        return data;
+      } catch (err) {
+        console.log("err", err);
+        return err;
+      }
+    },
+  },
 };

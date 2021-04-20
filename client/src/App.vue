@@ -1,14 +1,14 @@
 <template>
   <v-app id="app">
-    <v-toolbar dark color="primary">
-      <v-toolbar-title>Vuetify</v-toolbar-title>
+    <!-- <v-toolbar dark color="primary">
+      <v-toolbar-title>Vuetify</v-toolbar-title> -->
 
-      <v-spacer></v-spacer>
+      <!-- <v-spacer></v-spacer> -->
       <div id="nav">
         <router-link to="/">Book</router-link> |
         <router-link to="/events">All Events</router-link>
       </div>
-    </v-toolbar>
+    <!-- </v-toolbar> -->
 
     <router-view />
   </v-app>
