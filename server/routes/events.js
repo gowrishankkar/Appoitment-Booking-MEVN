@@ -21,15 +21,16 @@ router.post("/", async (req, res) => {
     // const newEvent = await event.save()
     // console.log(moment.utc(req.body.Date).format(), " req.body", req.body.Date);
     // const newEvent = await Event.find({"Date" : formattedDate})
-    // console.log("newEvent", newEvent)
+    console.log("formattedDate", formattedDate)
     const newEvent = await Event.find({"Date" : formattedDate}).exec(function(err, docs) {
-      if (docs.length){
+      if (docs != undefined && docs.length){
         res.status(422).json({message: "This Slot is already booked"});
       } else {
         res.status(201).json({message: "Event Booked Successfully"});
         event.save() 
       }
     });
+    console.log('newEvent', newEvent)
     
   
 

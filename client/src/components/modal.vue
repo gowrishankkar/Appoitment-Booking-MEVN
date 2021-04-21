@@ -7,7 +7,7 @@
           dark
           v-bind="attrs"
           v-on="on"
-          :disabled="!isTimeSelected"
+
           :class="{ disableColor: !(isTimeSelected && isTimeZoneSelected) }"
         >
           Book On Selected Date
@@ -97,6 +97,7 @@ export default {
   methods: {
     ...mapActions(["createEvent"]),
     submit() {
+           console.log(this.timeChip,'body')
       const V = this.$v;
       this.$v.$touch();
 
@@ -114,11 +115,12 @@ export default {
     },
     async createEventFn(name, email) {
       let body = {
-        Date: moment(this.timeChip).toISOString(),
+        Date: moment(this.timeChip).format(),
         Timezone: this.timeZone,
         Name: name,
         Email: email,
       };
+      console.log(this.timeChip,'body',body)
       try {
         await this.createEvent(body).then((response) => {
           console.log("post yes", response);

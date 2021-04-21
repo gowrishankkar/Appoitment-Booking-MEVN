@@ -9,7 +9,9 @@
           <v-autocomplete
             max-width="144"
             v-model="defaultTimezone"
-            :items="timezoneList"
+            :items="timeZoneDateset.map((timezone) => {
+                return timezone.name;
+              })"
             @change="setTimeZone($event)"
             dense
             filled
@@ -105,6 +107,7 @@ export default {
       console.log(timezone);
       this.userTimeZone = timezone;
       this.getFreeSlots(this.userTimeZone, this.picker);
+      this.$forceUpdate()
     },
     getAllowedDates(val) {
       if (this.slotDates.indexOf(val) !== -1) {
@@ -116,18 +119,19 @@ export default {
     },
     selectTime(time) {
       this.timeSelection = this.freeSlots[this.picker].slots[time];
-      console.log(
+      console.log(this.timeSelection,
         "change",
         moment(this.timeSelection).format("DD-MM-YYYY hh:mm A")
       );
     },
-    dateChange(date) {
+     dateChange(date) {
       this.picker = date
       this.timeChip = "";
       this.slots = [];
-      this.freeSlots[this.picker].slots.map((slot) => {
+      console.log( this.freeSlots[this.picker].slots)
+      this.freeSlots[this.picker].slots.map(async (slot) => {
         // console.log(slot, 'slot', moment(slot).format("hh:mm A"))
-        this.slots.push(moment(slot).format("hh:mm A"));
+        await this.slots.push(moment(slot).format("hh:mm A"));
       });
     },
 
@@ -138,7 +142,7 @@ export default {
           timezone: timezone,
         };
         await this.getSlots(payload).then((response) => {
-          // console.log("slots api", response);
+          console.log("slots api", response);
           this.freeSlots = response;
           this.slotDates = Object.keys(response);
         });
@@ -151,14 +155,14 @@ export default {
   created() {
     console.log("picker", this.picker);
   },
-  beforeUpdate() {
+  beforeMount() {
     this.picker = new Date().toISOString().substr(0, 10);
     this.userTimeZone = this.defaultTimezone;
     // this.dateChange(this.picker)
   },
   watch: {
     picker(value) {
-      // console.log('picker', value)
+      console.log('picker', value)
     },
     pickerDate(newval, oldval) {
       this.slots = [];
