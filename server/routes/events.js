@@ -1,23 +1,38 @@
 const express = require("express");
-const moment = require("moment");
+
 const JsonCircular = require('circular-json');
+const moment = require("moment-timezone");
 let router = express.Router();
 const Event = require("../models/events");
 
 // Create Event
 router.post("/", async (req, res) => {
-  console.log(moment.utc(req.body.Date).format(), " req.body", req.body.Date);
+  console.log ( req.body, " req.body",moment.tz(req.body.Date, "America/Los_Angeles").format("YYYY/MM/DD HH mm"));
   // let UTCDate = moment.utc(req.body.Date).format()
+  let formattedDate = moment.tz(req.body.Date, "America/Los_Angeles").format()
   const event = new Event({
-    Date: req.body.Date,
+    Date: formattedDate,
     Timezone: req.body.Timezone,
     Name: req.body.Name,
     Email: req.body.Email,
   });
 
   try {
-    const newEvent = await event.save();
-    res.status(201).json(newEvent);
+    // const newEvent = await event.save()
+    // console.log(moment.utc(req.body.Date).format(), " req.body", req.body.Date);
+ 
+    const newEvent = await Event.find({"Date" : formattedDate}).exec(function(err, docs) {
+      if (Date.length){
+        console.log('Name exists already', null);
+        res.status(422).json({message: "This Slot is already booked"});
+      } else {
+        res.status(201).json({message: "Event Booked Successfully"});
+        Date.save() 
+      }
+    });
+    
+  
+
   } catch (err) {
     res.status(400).json({ message: err.message });
   }

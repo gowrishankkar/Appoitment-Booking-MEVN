@@ -125,12 +125,10 @@ export default {
       // console.log('date',date)
       this.timeChip = "";
       this.slots = [];
-      if(this.freeSlots[this.picker]){
-              this.freeSlots[this.picker].slots.map((slot) => {
-        this.slots.push(slot.substring(20, 10));
+      this.freeSlots[this.picker].slots.map((slot) => {
+        console.log(slot, 'slot', moment(slot).format("hh:mm A"))
+        this.slots.push(moment(slot).format("hh:mm A"));
       });
-      }
-
     },
 
     async getFreeSlots(timezone, date) {
@@ -140,6 +138,7 @@ export default {
           timezone: timezone,
         };
         await this.getSlots(payload).then((response) => {
+          // console.log("slots api", response);
           this.freeSlots = response;
           this.slotDates = Object.keys(response);
         });

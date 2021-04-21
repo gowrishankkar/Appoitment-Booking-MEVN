@@ -7,7 +7,7 @@
           dark
           v-bind="attrs"
           v-on="on"
-          :disabled="!(isTimeSelected && isTimeZoneSelected)"
+          :disabled="!isTimeSelected "
           :class="{ 'disableColor': !(isTimeSelected && isTimeZoneSelected) }"
         >
           Book On Selected Date
@@ -43,6 +43,7 @@
         </form>
       </v-card>
     </v-dialog>
+
   </div>
 </template>
 
@@ -107,7 +108,7 @@ export default {
     },
     async createEventFn(name, email) {
       let body = {
-        Date: this.timeChip,
+        Date: moment(this.timeChip).toISOString(),
         Timezone: this.timeZone,
         Name: name,
         Email: email,
