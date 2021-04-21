@@ -6,7 +6,8 @@ const Event = require("../models/events");
 
 // Create Event
 router.post("/", async (req, res) => {
-  console.log(" req.body", req.body);
+  console.log(moment.utc(req.body.Date).format(), " req.body", req.body.Date);
+  // let UTCDate = moment.utc(req.body.Date).format()
   const event = new Event({
     Date: req.body.Date,
     Timezone: req.body.Timezone,

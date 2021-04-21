@@ -1,6 +1,6 @@
 const express = require("express");
 const datesBetween = require("dates-between");
-const moment = require("moment");
+const moment = require("moment-timezone");
 let timeSlotter = require("time-slotter");
 const Event = require("../models/events");
 
@@ -8,7 +8,7 @@ const router = express.Router();
 
 
 router.get("/", async (req, res) => {
-  let  date1   =  req.query.date;
+  let  date   =  req.query.date;
   let  timezone   =  req.query.timezone;
   console.log("timezone", date, timezone)
   let slotter = timeSlotter("10:00", "17:00", 30);
@@ -17,12 +17,12 @@ router.get("/", async (req, res) => {
     
     timeSlots.push(time[0])
   });
-  // console.log("time", timeSlots);
+  // console.log( moment('2021-04-30T06:30:00.000Z').format('HH mm'), "time", moment.tz('2021-04-30T06:30:00.000Z', timezone).format('HH mm'));
   const freeSlots = {};
-  var date = new Date(date1);
-  let slotStartDate = new Date(date.getFullYear(), date.getMonth(), 1)
-  let slotEndDate = new Date(date.getFullYear(), date.getMonth() + 1, 0)
-  console.log(date,'slotStartDate', slotStartDate , 'slotEndDate', slotEndDate);
+  var ndate = new Date(date);
+  let slotStartDate = new Date(ndate.getFullYear(), ndate.getMonth(), 1)
+  let slotEndDate = new Date(ndate.getFullYear(), ndate.getMonth() + 1, 0)
+  // console.log(date,'slotStartDate', slotStartDate , 'slotEndDate', slotEndDate);
   try {
     for (const date of datesBetween(
       slotStartDate,
@@ -32,9 +32,13 @@ router.get("/", async (req, res) => {
         timeSlots.map((slot, i)=>{
             // console.log( i,slot.split(':'));
             let splitSlot = slot.split(':')
-            allSlots.push(moment(date.setHours(splitSlot[0], splitSlot[1], 0)))
+            let slotT = moment(date.setHours(splitSlot[0], splitSlot[1], 0))
+            allSlots.push( moment.tz(slotT, timezone).format('DD-MM-YYYY hh:mm A'))
+            console.log( moment(slotT).format('hh:mm A'), "time", moment.tz(slotT, timezone).format('DD-MM-YYYY hh:mm A'));
+  
 
         })
+        // console.log(allSlots)
       freeSlots[moment(date).format("YYYY-MM-DD")] = {slots : allSlots};
     }
     // console.log(freeSlots)
