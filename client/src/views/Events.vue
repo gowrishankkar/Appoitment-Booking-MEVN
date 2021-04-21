@@ -51,15 +51,6 @@
       </div>
     </v-container>
   </div>
-  <!-- <v-container class="container">
-    <v-flex> -->
-
-  <!-- </v-flex> -->
-
-  <!-- <v-layout wrap>
- 
-    </v-layout>
-  </v-container> -->
 </template>
 
 <script>
@@ -95,9 +86,8 @@ export default {
   methods: {
     ...mapActions(["getAllEvents", "getEventsInRange"]),
     async getSelectedRange(date) {
-      console.log("date", date);
       try {
-        const payload = { startDate: date[0], endDate: date[1] };
+        const payload = { startDate: date[0], endDate: date[1] ? date[1] : date[0] };
         await this.getEventsInRange(payload).then((response) => {
           response.map((event, index) => {
             event.date = moment(event.Date).format("DD-MM-YYYY");
@@ -110,8 +100,6 @@ export default {
       } catch (error) {
         console.log("error", error);
       }
-
-      // this.fetchAllEvents();
     },
     async fetchAllEvents() {
       try {

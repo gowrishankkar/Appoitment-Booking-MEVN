@@ -19,6 +19,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.16.3",
     "moment": "^2.29.1",
+    "moment-timezone": "^0.5.33",
     "mongoose": "^5.8.3",
     "time-slotter": "^1.0.10"
   },

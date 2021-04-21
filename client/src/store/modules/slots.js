@@ -16,9 +16,9 @@ export default {
    
   },
   actions: {
-    async getSlots({ commit }) {
+    async getSlots({ commit }, payload) {
       try {
-        const { data } = await axios.get(`slots/`);
+        const { data } = await axios.get(`slots?date=${payload.date}&timezone=${payload.timezone}`);
         return data;
       } catch (err) {
         console.log("err", err);

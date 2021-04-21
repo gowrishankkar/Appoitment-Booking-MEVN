@@ -43,6 +43,10 @@ router.get("/range/", async (req, res) => {
         message: "Please ensure you pick two dates",
       });
     }
+    // if(startDate === endDate){
+        endDate = moment(endDate).set('hour', 20).toISOString();
+        // console.log('same', endDate)
+    // }
 
     console.log(' startDate, endDate ', typeof startDate, endDate )
     const event = await Event.find({ 
