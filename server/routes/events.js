@@ -20,14 +20,14 @@ router.post("/", async (req, res) => {
   try {
     // const newEvent = await event.save()
     // console.log(moment.utc(req.body.Date).format(), " req.body", req.body.Date);
- 
+    // const newEvent = await Event.find({"Date" : formattedDate})
+    // console.log("newEvent", newEvent)
     const newEvent = await Event.find({"Date" : formattedDate}).exec(function(err, docs) {
-      if (Date.length){
-        console.log('Name exists already', null);
+      if (docs.length){
         res.status(422).json({message: "This Slot is already booked"});
       } else {
         res.status(201).json({message: "Event Booked Successfully"});
-        Date.save() 
+        event.save() 
       }
     });
     

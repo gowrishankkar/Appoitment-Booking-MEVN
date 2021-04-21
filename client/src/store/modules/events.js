@@ -31,12 +31,10 @@ export default {
     async createEvent({ commit }, payload) {
       console.log("called post api");
       try {
-        const { data } = await axios.post(`events/`, payload);
-
-        return data;
+        const response  = await axios.post(`events/`, payload);
+        return response;
       } catch (err) {
-        console.log("err", err);
-        return err;
+        return err.response;
       }
     },
     async getEventsInRange({ commit }, payload) {

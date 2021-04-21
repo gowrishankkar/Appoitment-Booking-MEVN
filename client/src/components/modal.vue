@@ -7,8 +7,8 @@
           dark
           v-bind="attrs"
           v-on="on"
-          :disabled="!isTimeSelected "
-          :class="{ 'disableColor': !(isTimeSelected && isTimeZoneSelected) }"
+          :disabled="!isTimeSelected"
+          :class="{ disableColor: !(isTimeSelected && isTimeZoneSelected) }"
         >
           Book On Selected Date
         </v-btn>
@@ -17,7 +17,7 @@
       <v-card>
         <v-toolbar color="primary" dark>Book Appointment</v-toolbar>
 
-        <v-card-text> {{timeChip}} </v-card-text>
+        <v-card-text> {{ timeChip }} </v-card-text>
 
         <form class="pa-5">
           <v-text-field
@@ -43,7 +43,11 @@
         </form>
       </v-card>
     </v-dialog>
-
+    <div class="text-center">
+      <v-snackbar v-model="showSnackbar">
+        {{ snackBarText }}
+      </v-snackbar>
+    </div>
   </div>
 </template>
 
@@ -86,6 +90,8 @@ export default {
       dialog: false,
       name: "",
       email: "",
+      showSnackbar: false,
+      snackBarText: ``,
     };
   },
   methods: {
@@ -113,14 +119,22 @@ export default {
         Name: name,
         Email: email,
       };
-      console.log("body", body);
       try {
-        await this.createEvent(body).then(() => {
-          console.log("post yes");
+        await this.createEvent(body).then((response) => {
+          console.log("post yes", response);
+          this.showToaster(response.data.message);
         });
       } catch (error) {
-        console.log("post error", error);
+        console.log("post asdaerrors", error.response);
+        this.showToaster(error.response);
       }
+    },
+    showToaster(msg) {
+      this.showSnackbar = true;
+      this.snackBarText = msg;
+      setTimeout(() => {
+        this.showSnackbar = false;
+      }, 3000);
     },
   },
   computed: {

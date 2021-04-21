@@ -122,11 +122,11 @@ export default {
       );
     },
     dateChange(date) {
-      // console.log('date',date)
+      this.picker = date
       this.timeChip = "";
       this.slots = [];
       this.freeSlots[this.picker].slots.map((slot) => {
-        console.log(slot, 'slot', moment(slot).format("hh:mm A"))
+        // console.log(slot, 'slot', moment(slot).format("hh:mm A"))
         this.slots.push(moment(slot).format("hh:mm A"));
       });
     },
