@@ -1,224 +1,128 @@
 <template>
-<v-container>
-  <v-row class="fill-height">
-    <v-col>
-      <v-sheet height="64">
-        <v-toolbar
-          flat
-        >
-          <v-btn
-            outlined
-            class="mr-4"
-            color="grey darken-2"
-            @click="setToday"
-          >
-            Today
-          </v-btn>
-          <v-btn
-            fab
-            text
-            small
-            color="grey darken-2"
-            @click="prev"
-          >
-            <v-icon small>
-              mdi-chevron-left
-            </v-icon>
-          </v-btn>
-          <v-btn
-            fab
-            text
-            small
-            color="grey darken-2"
-            @click="next"
-          >
-            <v-icon small>
-              mdi-chevron-right
-            </v-icon>
-          </v-btn>
-          <v-toolbar-title v-if="$refs.calendar">
-            {{ $refs.calendar.title }}
-          </v-toolbar-title>
-          <v-spacer></v-spacer>
-          <v-menu
-            bottom
-            right
-          >
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                outlined
-                color="grey darken-2"
-                v-bind="attrs"
-                v-on="on"
-              >
-                <span>{{ typeToLabel[type] }}</span>
-                <v-icon right>
-                  mdi-menu-down
-                </v-icon>
-              </v-btn>
-            </template>
-            <v-list>
-              <v-list-item @click="type = 'day'">
-                <v-list-item-title>Day</v-list-item-title>
-              </v-list-item>
-              <v-list-item @click="type = 'week'">
-                <v-list-item-title>Week</v-list-item-title>
-              </v-list-item>
-              <v-list-item @click="type = 'month'">
-                <v-list-item-title>Month</v-list-item-title>
-              </v-list-item>
-              <v-list-item @click="type = '4day'">
-                <v-list-item-title>4 days</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </v-toolbar>
-      </v-sheet>
-      <v-card height="600">
-        <v-calendar
-          ref="calendar"
-          v-model="focus"
-          color="primary"
-          :events="events"
-          :event-color="getEventColor"
-          :type="type"
-          @click:event="showEvent"
-          @click:more="viewDay"
-          @click:date="viewDay"
-          @change="updateRange"
-        ></v-calendar>
+  <div>
+    <v-row>
+      <v-col cols="12" sm="6" md="4">
         <v-menu
-          v-model="selectedOpen"
+          ref="menu"
+          v-model="menu"
           :close-on-content-click="false"
-          :activator="selectedElement"
-          offset-x
+          :return-value.sync="date"
+          transition="scale-transition"
+          offset-y
+          min-width="auto"
         >
-          <v-card
-            color="grey lighten-4"
-            min-width="350px"
-            flat
-          >
-            <v-toolbar
-              :color="selectedEvent.color"
-              dark
+          <template v-slot:activator="{ on, attrs }">
+            <v-text-field
+              v-model="date"
+              label="Picker in menu"
+              prepend-icon="mdi-calendar"
+              readonly
+              v-bind="attrs"
+              v-on="on"
+            ></v-text-field>
+          </template>
+          <v-date-picker v-model="date" no-title range scrollable>
+            <v-spacer></v-spacer>
+            <v-btn text color="primary" @click="menu = false"> Cancel </v-btn>
+            <v-btn
+              text
+              color="primary"
+              @click="
+                $refs.menu.save(date);
+                getSelectedRange(date);
+              "
             >
-              <v-btn icon>
-                <v-icon>mdi-pencil</v-icon>
-              </v-btn>
-              <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
-              <v-spacer></v-spacer>
-              <v-btn icon>
-                  <v-icon>mdi-heart</v-icon>
-              </v-btn>
-              <v-btn icon>
-                <v-icon>mdi-dots-vertical</v-icon>
-              </v-btn>
-            </v-toolbar>
-            <v-card-text>
-              <span v-html="selectedEvent.details"></span>
-            </v-card-text>
-            <v-card-actions>
-              <v-btn
-                text
-                color="secondary"
-                @click="selectedOpen = false"
-              >
-                Cancel
-              </v-btn>
-            </v-card-actions>
-          </v-card>
+              OK
+            </v-btn>
+          </v-date-picker>
         </v-menu>
-      </v-card>
-    </v-col>
-  </v-row>
-  </v-container>
+      </v-col>
+    </v-row>
+
+    <v-container>
+      <div>
+        <v-data-table
+          dense
+          :headers="headers"
+          :items="events"
+          item-key="name"
+          class="elevation-1"
+        ></v-data-table>
+      </div>
+    </v-container>
+  </div>
 </template>
 
 <script>
-  export default {
-    data: () => ({
-      focus: '',
-      type: 'month',
-      typeToLabel: {
-        month: 'Month',
-        week: 'Week',
-        day: 'Day',
-        '4day': '4 Days',
-      },
-      selectedEvent: {},
-      selectedElement: null,
-      selectedOpen: false,
+import moment from "moment";
+import { mapActions, mapState } from "vuex";
+
+export default {
+  name: "Booking",
+  components: {},
+  props: {
+    msg: String,
+  },
+  data() {
+    return {
+      date: new Date().toISOString().substr(0, 10),
+      menu: false,
       events: [],
-      colors: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'],
-      names: ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party'],
-    }),
-    mounted () {
-      this.$refs.calendar.checkChange()
+      headers: [
+        {
+          text: "Index",
+          align: "start",
+          sortable: false,
+          value: "rowIndex",
+        },
+        { text: "Name", value: "Name" },
+        { text: "Email", value: "Email" },
+        { text: "Date", value: "date" },
+        { text: "Time", value: "time" },
+      ],
+    };
+  },
+
+  methods: {
+    ...mapActions(["getAllEvents", "getEventsInRange"]),
+    async getSelectedRange(date) {
+      try {
+        const payload = { startDate: date[0], endDate: date[1] ? date[1] : date[0] };
+        await this.getEventsInRange(payload).then((response) => {
+          response.map((event, index) => {
+            event.date = moment(event.Date).format("DD-MM-YYYY");
+            event.time = moment(event.Date).format("hh:mm A");
+            event.rowIndex = index;
+          });
+          console.log("yes getEventsInRange", response);
+          this.events = response;
+        });
+      } catch (error) {
+        console.log("error", error);
+      }
     },
-    methods: {
-      viewDay ({ date }) {
-        this.focus = date
-        this.type = 'day'
-      },
-      getEventColor (event) {
-        return event.color
-      },
-      setToday () {
-        this.focus = ''
-      },
-      prev () {
-        this.$refs.calendar.prev()
-      },
-      next () {
-        this.$refs.calendar.next()
-      },
-      showEvent({ nativeEvent, event }) {
-        const open = () => {
-          this.selectedEvent = event
-          this.selectedElement = nativeEvent.target
-          setTimeout(() => {
-            this.selectedOpen = true
-          }, 10)
-        }
-
-        if (this.selectedOpen) {
-          this.selectedOpen = false
-          setTimeout(open, 10)
-        } else {
-          open()
-        }
-
-        nativeEvent.stopPropagation()
-      },
-      updateRange({ start, end }) {
-        const events = []
-
-        const min = new Date(`${start.date}T00:00:00`)
-        const max = new Date(`${end.date}T23:59:59`)
-        const days = (max.getTime() - min.getTime()) / 86400000
-        const eventCount = this.rnd(days, days + 20)
-
-        for (let i = 0; i < eventCount; i++) {
-          const allDay = this.rnd(0, 3) === 0
-          const firstTimestamp = this.rnd(min.getTime(), max.getTime())
-          const first = new Date(firstTimestamp - (firstTimestamp % 900000))
-          const secondTimestamp = this.rnd(2, allDay ? 288 : 8) * 900000
-          const second = new Date(first.getTime() + secondTimestamp)
-
-          events.push({
-            name: this.names[this.rnd(0, this.names.length - 1)],
-            start: first,
-            end: second,
-            color: this.colors[this.rnd(0, this.colors.length - 1)],
-            timed: !allDay,
-          })
-        }
-
-        this.events = events
-      },
-      rnd(a, b) {
-        return Math.floor((b - a + 1) * Math.random()) + a
-      },
+    async fetchAllEvents() {
+      try {
+        await this.getAllEvents().then((response) => {
+          response.map((event, index) => {
+            event.date = moment(event.Date).format("DD-MM-YYYY");
+            event.time = moment(event.Date).format("hh:mm A");
+            event.rowIndex = index;
+          });
+          this.$forceUpdate();
+          console.log("yes", response);
+          this.events = response;
+        });
+      } catch (error) {
+        console.log("error", error);
+      }
     },
-  }
-</script> 
+  },
+};
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+</style>
+
+

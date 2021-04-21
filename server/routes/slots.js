@@ -2,23 +2,31 @@ const express = require("express");
 const datesBetween = require("dates-between");
 const moment = require("moment");
 let timeSlotter = require("time-slotter");
+const Event = require("../models/events");
 
 const router = express.Router();
 
+
 router.get("/", async (req, res) => {
+  let  date1   =  req.query.date;
+  let  timezone   =  req.query.timezone;
+  console.log("timezone", date, timezone)
   let slotter = timeSlotter("10:00", "17:00", 30);
   let timeSlots = [];
   slotter.map((time) => {
     
     timeSlots.push(time[0])
   });
-  console.log("time", timeSlots);
+  // console.log("time", timeSlots);
   const freeSlots = {};
-
+  var date = new Date(date1);
+  let slotStartDate = new Date(date.getFullYear(), date.getMonth(), 1)
+  let slotEndDate = new Date(date.getFullYear(), date.getMonth() + 1, 0)
+  console.log(date,'slotStartDate', slotStartDate , 'slotEndDate', slotEndDate);
   try {
     for (const date of datesBetween(
-      new Date("2021-04-19"),
-      new Date("2021-04-28")
+      slotStartDate,
+      slotEndDate
     )) {
         let allSlots = []
         timeSlots.map((slot, i)=>{
@@ -29,7 +37,7 @@ router.get("/", async (req, res) => {
         })
       freeSlots[moment(date).format("YYYY-MM-DD")] = {slots : allSlots};
     }
-    console.log(freeSlots)
+    // console.log(freeSlots)
     res.send(freeSlots);
   } catch (error) {
     res.status(400).json({ message: error.message });

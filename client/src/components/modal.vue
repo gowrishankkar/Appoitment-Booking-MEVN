@@ -7,8 +7,8 @@
           dark
           v-bind="attrs"
           v-on="on"
-          :disabled="btnDisabled"
-          :class="{ disableColor: btnDisabled }"
+          :disabled="!(isTimeSelected && isTimeZoneSelected)"
+          :class="{ 'disableColor': !(isTimeSelected && isTimeZoneSelected) }"
         >
           Book On Selected Date
         </v-btn>
@@ -17,7 +17,7 @@
       <v-card>
         <v-toolbar color="primary" dark>Book Appointment</v-toolbar>
 
-        <v-card-text> provide </v-card-text>
+        <v-card-text> {{timeChip}} </v-card-text>
 
         <form class="pa-5">
           <v-text-field
@@ -50,6 +50,7 @@
 import { validationMixin } from "vuelidate";
 import { required, maxLength, email } from "vuelidate/lib/validators";
 import { mapActions, mapState } from "vuex";
+import moment from "moment";
 
 export default {
   props: ["timeChip", "timeZone"],
@@ -64,15 +65,23 @@ export default {
   watch: {
     timeChip(value) {
       if (value) {
-        this.btnDisabled = false;
+        this.isTimeSelected = true;
       } else {
-        this.btnDisabled = true;
+        this.isTimeSelected = false;
+      }
+    },
+    timeZone(value) {
+      if (value) {
+        this.isTimeZoneSelected = true;
+      } else {
+        this.isTimeZoneSelected = false;
       }
     },
   },
   data() {
     return {
-      btnDisabled: true,
+      isTimeSelected: false,
+      isTimeZoneSelected: false,
       dialog: false,
       name: "",
       email: "",
