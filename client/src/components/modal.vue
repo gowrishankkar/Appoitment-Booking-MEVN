@@ -1,23 +1,26 @@
 <template>
   <div class="text-center">
-    <v-dialog v-model="dialog" width="500">
+    <v-dialog v-model="dialog"  width="500">
       <template v-slot:activator="{ on, attrs }">
         <v-btn
           color="primary lighten-2"
           dark
           v-bind="attrs"
           v-on="on"
-
-          :class="{ disableColor: !(isTimeSelected && isTimeZoneSelected) }"
+          class="ma-4"
+          :disabled="!isTimeSelected"
+          :class="{ disableColor: !isTimeSelected }"
         >
           Book On Selected Date
         </v-btn>
       </template>
 
-      <v-card>
+      <v-card v-if="dialog">
         <v-toolbar color="primary" dark>Book Appointment</v-toolbar>
-
-        <v-card-text> {{ timeChip }} </v-card-text>
+        <v-flex row class="justify-space-between ma-4">
+          <h4>{{ selectedTime }}</h4>
+          <h4>{{ selectedDate }}</h4>
+        </v-flex>
 
         <form class="pa-5">
           <v-text-field
@@ -68,15 +71,17 @@ export default {
   },
 
   watch: {
-    timeChip(value) {
-      if (value) {
+    timeChip(selectedDateTime) {
+      this.selectedTime = moment(selectedDateTime).format("hh:mm A");
+      this.selectedDate = moment(selectedDateTime).format("ddd, DD MMMM YYYY");
+      if (selectedDateTime) {
         this.isTimeSelected = true;
       } else {
         this.isTimeSelected = false;
       }
     },
-    timeZone(value) {
-      if (value) {
+    timeZone(selectedDateTime) {
+      if (selectedDateTime) {
         this.isTimeZoneSelected = true;
       } else {
         this.isTimeZoneSelected = false;
@@ -92,20 +97,22 @@ export default {
       email: "",
       showSnackbar: false,
       snackBarText: ``,
+      selectedDate: "",
+      selectedTime: "",
     };
   },
+
   methods: {
     ...mapActions(["createEvent"]),
     submit() {
-           console.log(this.timeChip,'body')
+      console.log(this.timeChip, "body");
       const V = this.$v;
       this.$v.$touch();
 
       if (!V.$error) {
         this.createEventFn(this.name, this.email);
-        console.log("Form successfully submitted.");
       } else {
-        console.log("Form failed validation");
+        this.showToaster("Please enter valid form details");
       }
     },
     clear() {
@@ -120,10 +127,13 @@ export default {
         Name: name,
         Email: email,
       };
-      console.log(this.timeChip,'body',body)
+      console.log(this.timeChip, "body", body);
       try {
         await this.createEvent(body).then((response) => {
           console.log("post yes", response);
+          this.dialog = false;
+          this.$parent.getFreeSlots(this.timeZone, this.timeChip);
+          this.clear();
           this.showToaster(response.data.message);
         });
       } catch (error) {
@@ -159,12 +169,8 @@ export default {
 };
 </script>
 
-<style  scoped>
+<style scoped>
 ::v-deep .theme--dark.v-btn.v-btn--disabled.v-btn--has-bg {
-  background-color: green;
-}
-
-.disableColor {
-  background-color: green !important;
+  background-color: rgb(209, 207, 207) !important;
 }
 </style>
