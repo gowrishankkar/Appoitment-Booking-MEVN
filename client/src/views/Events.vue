@@ -93,6 +93,7 @@ export default {
           dateRange[1] = startInRange;
         }
       }
+      console.log('dateRange', dateRange)
       try {
         const payload = {
           startDate: dateRange[0],
