@@ -1,15 +1,9 @@
 <template>
   <v-app id="app">
-    <!-- <v-toolbar dark color="primary">
-      <v-toolbar-title>Vuetify</v-toolbar-title> -->
-
-      <!-- <v-spacer></v-spacer> -->
-      <div id="nav">
-        <router-link to="/">Book</router-link> |
-        <router-link to="/events">All Events</router-link>
-      </div>
-    <!-- </v-toolbar> -->
-
+    <div id="nav">
+      <router-link to="/">Book</router-link> |
+      <router-link to="/events">All Events</router-link>
+    </div>
     <router-view />
   </v-app>
 </template>
@@ -27,11 +21,11 @@
 }
 
 #nav a {
-  text-decoration: none;
-  color:  #ac745a;
+  font-weight: bold;
+  color: #2c3e50;
 }
 
 #nav a.router-link-exact-active {
-  color: #fcfdfd;
+  color: #42b983;
 }
 </style>

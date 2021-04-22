@@ -2,14 +2,13 @@
   <v-container class="container">
     <v-flex>
       <v-row>
-        <!--               timeZoneDateset.map((timezone) => {
-                return timezone.name;
-              }) -->
-        <v-col cols="12" md="6">
+        <v-col cols="12" md="5">
           <v-autocomplete
             max-width="144"
             v-model="defaultTimezone"
-            :items="timezoneList"
+            item-text="name"
+            item-value="name"
+            :items="timeZoneDateset"
             @change="setTimeZone($event)"
             dense
             filled
@@ -20,20 +19,18 @@
           <Modal :timeChip="timeSelection" :timeZone="userTimeZone" />
         </v-col>
       </v-row>
-
     </v-flex>
 
     <v-layout wrap>
       <v-flex row class="justify-space-around">
         <v-date-picker
-          ref="picker"  
+          ref="picker"
           v-model="picker"
           :picker-date.sync="pickerDate"
-
           @change="dateChange($event)"
-
           :allowed-dates="getAllowedDates"
           elevation="15"
+          :min="presentDate"
           next-icon="mdi-arrow-right"
           prev-icon=" mdi-arrow-left"
         ></v-date-picker>
@@ -44,21 +41,32 @@
             <v-sheet class="pa-1 primary text-right" dark rounded="t-xl"
               ><v-card-title>Available Slots</v-card-title>
             </v-sheet>
+            <div class="flexcard" v-if="showSpinner">
+              <v-flex>
+                <v-progress-circular
+                  class="ma-7 center"
+                  :size="50"
+                  color="primary"
+                  indeterminate
+                >
+                </v-progress-circular>
+              </v-flex>
+            </div>
 
-            <div class="pa-2 flexcard">
-              <v-card-text>
+            <div class="pa-2 flexcard" v-if="!showSpinner">
+              <v-card-text v-if="slots.length != 0">
                 <v-chip-group
                   v-model="timeChip"
                   active-class="deep-purple accent-4 white--text"
                   column
                   @change="selectTime($event)"
-                  
                 >
-                  <v-chip v-for="(slot,i ) in slots" :key="i">{{
+                  <v-chip v-for="(slot, i) in slots" :key="i">{{
                     slot
                   }}</v-chip>
                 </v-chip-group>
               </v-card-text>
+              <v-card-text v-else> No slots to show </v-card-text>
             </div>
           </v-sheet>
         </div>
@@ -82,30 +90,30 @@ export default {
   },
   data() {
     return {
-      timeChip:'',
+      timeChip: "",
       searchInput: "",
       timeZoneDateset: timeZones,
-      userTimeZone : '',
+      userTimeZone: "",
       defaultTimezone: "America/Los_Angeles",
+      presentDate: new Date().toISOString().substr(0, 10),
       picker: new Date().toISOString().substr(0, 10),
-      items: ["Foo", "Bar", "Fizz", "Buzz"],
       pickerDate: null,
       slotDates: [],
       freeSlots: {},
       slots: [],
       timeSelection: "",
-      timezoneList : ["America/Los_Angeles", "Canada/Pacific", "Europe/Sarajevo", "	US/Michigan"] 
-
-      
+      showSpinner: false,
     };
   },
 
   methods: {
     ...mapActions(["getAllEvents", "createEvent", "getSlots"]),
-    setTimeZone(timezone){
-      console.log(timezone)
+    setTimeZone(timezone) {
+      this.timeSelection = "";
       this.userTimeZone = timezone;
-      this.getFreeSlots(this.userTimeZone, this.picker)
+      this.slots = [];
+      this.getFreeSlots(this.userTimeZone, this.picker);
+      this.$forceUpdate();
     },
     getAllowedDates(val) {
       if (this.slotDates.indexOf(val) !== -1) {
@@ -115,60 +123,52 @@ export default {
       }
       this.$forceUpdate();
     },
-    selectTime(time){
-      this.timeSelection = this.freeSlots[this.picker].slots[time]
-        console.log('change', moment(this.timeSelection).format("DD-MM-YYYY hh:mm A"))
+    selectTime(time) {
+      this.timeSelection = this.freeSlots[this.picker].slots[time];
     },
     dateChange(date) {
-      // console.log('date',date)
-      this.timeChip=""
+      this.picker = date;
+      this.timeChip = "";
       this.slots = [];
-      this.freeSlots[this.picker].slots.map((slot) => {
-        this.slots.push(moment(slot).format("hh:mm A"));
-      });
+      if (this.freeSlots[this.picker]) {
+        this.freeSlots[this.picker].slots.map(async (slot) => {
+          await this.slots.push(moment(slot).format("hh:mm A"));
+        });
+      }
     },
 
     async getFreeSlots(timezone, date) {
+      this.showSpinner = true;
       try {
         let payload = {
           date: date,
-          timezone: timezone
-        }
-       await  this.getSlots(payload).then((response) => {
-          // console.log("slots api", response);
+          timezone: timezone,
+        };
+        await this.getSlots(payload).then((response) => {
           this.freeSlots = response;
           this.slotDates = Object.keys(response);
+          this.showSpinner = false;
         });
       } catch (error) {
         console.log("error", error);
       }
+      this.dateChange(this.picker);
+      this.$forceUpdate();
     },
+  },
 
-  },
-  
-  created(){
-    console.log('picker', this.picker)
-  },
-  beforeUpdate(){
-    this.picker = new Date().toISOString().substr(0, 10)
+  beforeMount() {
+    this.picker = new Date().toISOString().substr(0, 10);
+    this.userTimeZone = this.defaultTimezone;
     // this.dateChange(this.picker)
   },
   watch: {
-    picker(value){
-      // console.log('picker', value)
-    },
-        pickerDate (newval,oldval) {
-          this.slots = [];
-          console.log('pickerDate', newval,oldval)
-          this.picker= `${newval}-01`
-          console.log('pickerDate',this.userTimeZone, this.picker)
-          this.getFreeSlots(this.userTimeZone,  this.picker)
-          this.dateChange(this.picker)
-      // here you can check if month changed using newval and oldval
-    },
-    timeSelection(value) {
-      // console.log("value", value);
-      // this.fetchOtherEvents();
+    pickerDate(newval, oldval) {
+      this.slots = [];
+      this.timeSelection = "";
+      this.picker = `${newval}-01`;
+      this.getFreeSlots(this.userTimeZone, this.picker);
+      this.dateChange(this.picker);
     },
   },
 };
@@ -205,7 +205,6 @@ a {
 .flexcard .v-toolbar {
   flex: 0;
 }
-
 </style>
 
 
