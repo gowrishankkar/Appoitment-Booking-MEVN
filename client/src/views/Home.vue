@@ -110,10 +110,8 @@ export default {
     ...mapActions(["getAllEvents", "createEvent", "getSlots"]),
     setTimeZone(timezone) {
       this.timeSelection = "";
-      console.log(timezone, this.defaultTimezone);
       this.userTimeZone = timezone;
       this.slots = [];
-      // console.log('getTimeZones', this.timeZoneDateset)
       this.getFreeSlots(this.userTimeZone, this.picker);
       this.$forceUpdate();
     },
@@ -127,11 +125,6 @@ export default {
     },
     selectTime(time) {
       this.timeSelection = this.freeSlots[this.picker].slots[time];
-      console.log(
-        this.timeSelection,
-        "change",
-        moment(this.timeSelection).format("DD-MM-YYYY hh:mm A")
-      );
     },
     dateChange(date) {
       this.picker = date;
@@ -170,22 +163,12 @@ export default {
     // this.dateChange(this.picker)
   },
   watch: {
-    componentKey() {
-      console.log("componentKey");
-    },
-    picker(value) {
-      console.log("picker", value);
-    },
     pickerDate(newval, oldval) {
       this.slots = [];
       this.timeSelection = "";
       this.picker = `${newval}-01`;
       this.getFreeSlots(this.userTimeZone, this.picker);
       this.dateChange(this.picker);
-    },
-    timeSelection(value) {
-      // console.log("value", value);
-      // this.fetchOtherEvents();
     },
   },
 };

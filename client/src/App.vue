@@ -1,5 +1,5 @@
 <template>
-  <v-app id="app"> 
+  <v-app id="app">
     <div id="nav">
       <router-link to="/">Book</router-link> |
       <router-link to="/events">All Events</router-link>

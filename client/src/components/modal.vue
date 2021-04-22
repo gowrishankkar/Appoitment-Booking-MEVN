@@ -1,6 +1,6 @@
 <template>
   <div class="text-center">
-    <v-dialog v-model="dialog"  width="500">
+    <v-dialog v-model="dialog" width="500">
       <template v-slot:activator="{ on, attrs }">
         <v-btn
           color="primary lighten-2"
@@ -105,7 +105,6 @@ export default {
   methods: {
     ...mapActions(["createEvent"]),
     submit() {
-      console.log(this.timeChip, "body");
       const V = this.$v;
       this.$v.$touch();
 
@@ -127,17 +126,14 @@ export default {
         Name: name,
         Email: email,
       };
-      console.log(this.timeChip, "body", body);
       try {
         await this.createEvent(body).then((response) => {
-          console.log("post yes", response);
           this.dialog = false;
           this.$parent.getFreeSlots(this.timeZone, this.timeChip);
           this.clear();
           this.showToaster(response.data.message);
         });
       } catch (error) {
-        console.log("post asdaerrors", error.response);
         this.showToaster(error.response);
       }
     },

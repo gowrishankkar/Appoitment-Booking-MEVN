@@ -18,10 +18,8 @@ export default {
   mutations: {},
   actions: {
     async getAllEvents({ commit }) {
-      console.log("called api");
       try {
         const { data } = await axios.get(`events/`);
-
         return data;
       } catch (err) {
         console.log("err", err);
@@ -29,7 +27,6 @@ export default {
       }
     },
     async createEvent({ commit }, payload) {
-      console.log("called post api");
       try {
         const response  = await axios.post(`events/`, payload);
         return response;
@@ -38,7 +35,6 @@ export default {
       }
     },
     async getEventsInRange({ commit }, payload) {
-      console.log("called event range api");
       try {
         const { data } = await axios.get(`events/range?startDate=${payload.startDate}&endDate=${payload.endDate}`, payload);
 
