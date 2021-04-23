@@ -7,11 +7,12 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "client": "npm run serve --prefix client",
     "install-client": "npm install --prefix client",
+    "build-client": "npm run build --prefix client",
     "install-server": "cd server && npm install", 
     "install-d": "npm run install-client && npm run install-server",
     "heroku-postbuild": "npm run install-d ",
     "server": "npm start --prefix server",
-    "build": "npm run dev",
+    "build": "concurrently \"npm run server\" \"npm run build-client\"",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "repository": {
