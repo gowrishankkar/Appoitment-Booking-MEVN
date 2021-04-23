@@ -6,8 +6,12 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "client": "npm run serve --prefix client",
+    "install-client": "cd client && npm install",
+    "install-server": "cd server && npm install", 
+    "install-d": "npm run install-client && npm run install-server",
+    "heroku-postbuild": "npm run install-d && npm run build",
     "server": "npm start --prefix server",
-    "build": "concurrently \"npm run server\" \"npm run client\"",
+    "build": "concurrently \"npm run build\" \"npm run client\"",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "repository": {
