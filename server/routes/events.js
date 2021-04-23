@@ -32,6 +32,8 @@ router.post("/", async (req, res) => {
   }
 });
 
+
+// Get all events
 router.get("/", async (req, res) => {
   try {
     const event = await Event.find();
@@ -41,10 +43,13 @@ router.get("/", async (req, res) => {
   }
 });
 
+
+// Get events in range
 router.get("/range/", async (req, res) => {
   try {
     let startDate = req.query.startDate;
     let endDate = req.query.endDate;
+
     //1. check that date is not empty
     if (startDate === "" || endDate === "") {
       return res.status(400).json({
@@ -52,6 +57,7 @@ router.get("/range/", async (req, res) => {
         message: "Please ensure you pick two dates",
       });
     }
+    
     endDate = moment(endDate).set("hour", 20).toISOString();
 
     const event = await Event.find({

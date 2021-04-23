@@ -164,7 +164,7 @@ app.use("/events", events);
 app.use("/slots", slots);
 
 mongoose
-  .connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(db, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, })
   .then(() => console.log("mongodb connected..."))
   .catch((err) => console.log("MongoError:", err));
 
