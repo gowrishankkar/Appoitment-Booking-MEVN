@@ -131,7 +131,7 @@ app.use(cors());
  */
 
 
-app.use("/events", events);
+app.use("/api/events", events);
 
 
 /**
@@ -161,7 +161,7 @@ app.use("/events", events);
  */
 
 
-app.use("/slots", slots);
+app.use("/api/slots", slots);
 
 // Handle production
 if (process.env.NODE_ENV === 'production') {
