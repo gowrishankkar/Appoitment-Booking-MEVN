@@ -24,7 +24,7 @@ const swaggerOptions = {
         url: "https://www.linkedin.com/in/gowrishankarprashanth/",
         email: "gowrishankarprashanth@gmail.com",
       },
-      server: ["http://localhost:9001/"],
+      server: ["http://localhost:9001/api"],
     },
   },
   apis: ["server.js"],
