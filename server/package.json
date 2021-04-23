@@ -1,5 +1,5 @@
 {
-  "name": "server-template",
+  "name": "server-appointment-booking",
   "version": "1.0.0",
   "description": "Express.js template",
   "main": "server.js",

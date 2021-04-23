@@ -68,7 +68,7 @@ app.use(cors());
  *    Date:
  *     type: date
  *     description: timezone of user
- *     example: '2020-08-30'
+ *     example: '2021-04-01T21:30:00+05:30'
  */
 
 //Routes
@@ -138,7 +138,7 @@ app.use("/events", events);
  * @swagger
  * /slots?date=2021-04-01&timezone=Pacific/Rarotonga:
  *  get:
- *   summary: Get free slots
+ *   summary: Get free slots on the selected month
  *   description: Get free slots on a given month and timezone
  *   parameters:
  *    - in: query
