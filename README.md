@@ -59,6 +59,20 @@ To stop your running server/client
 
   
 
+  #### To run client and server concurrently 
+
+  
+
+```sh
+
+  
+
+npm install
+
+npm run dev
+```
+
+
 ```sh
 
 ctrl + c
