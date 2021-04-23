@@ -74,9 +74,9 @@ app.use(cors());
 //Routes
 /**
  * @swagger
- * /events:
+ * /api/events:
  *  get:
- *    summary: Get events in range
+ *    summary: Get all events 
  *    description: Request all events
  *    responses:
  *      '200':
@@ -85,7 +85,7 @@ app.use(cors());
 
 /**
  * @swagger
- * /events/range?startDate=2021-04-13&endDate=2021-04-30:
+ * /api/events/range?startDate=2021-04-13&endDate=2021-04-30:
  *  get:
  *   summary: Get events in range
  *   description: get events in range
@@ -111,7 +111,7 @@ app.use(cors());
 
 /**
  * @swagger
- * /events:
+ * /api/events:
  *  post:
  *   summary: Create new event
  *   description: Create new event appointment 
@@ -136,7 +136,7 @@ app.use("/api/events", events);
 
 /**
  * @swagger
- * /slots?date=2021-04-01&timezone=Pacific/Rarotonga:
+ * /api/slots?date=2021-04-01&timezone=Pacific/Rarotonga:
  *  get:
  *   summary: Get free slots on the selected month
  *   description: Get free slots on a given month and timezone
