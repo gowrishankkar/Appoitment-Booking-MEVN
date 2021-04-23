@@ -35,9 +35,9 @@
           prev-icon=" mdi-arrow-left"
         ></v-date-picker>
 
-        <!-- AM -->
-        <div>
-          <v-sheet elevation="10" rounded="xl">
+
+        <div  class="slot-caontainer">
+          <v-sheet elevation="10" rounded="xl" >
             <v-sheet class="pa-1 primary text-right" dark rounded="t-xl"
               ><v-card-title>Available Slots</v-card-title>
             </v-sheet>
@@ -108,6 +108,8 @@ export default {
 
   methods: {
     ...mapActions(["getAllEvents", "createEvent", "getSlots"]),
+
+    // Sets new timezone based on selection
     setTimeZone(timezone) {
       this.timeSelection = "";
       this.userTimeZone = timezone;
@@ -115,6 +117,8 @@ export default {
       this.getFreeSlots(this.userTimeZone, this.picker);
       this.$forceUpdate();
     },
+
+    // Returns true only for the dates to be enabled
     getAllowedDates(val) {
       if (this.slotDates.indexOf(val) !== -1) {
         return true;
@@ -123,9 +127,13 @@ export default {
       }
       this.$forceUpdate();
     },
+
+    // Sets the selected slot 
     selectTime(time) {
       this.timeSelection = this.freeSlots[this.picker].slots[time];
     },
+
+    // Triggered during date change
     dateChange(date) {
       this.picker = date;
       this.timeChip = "";
@@ -137,6 +145,7 @@ export default {
       }
     },
 
+    // Fetch all the free slot for the selected month
     async getFreeSlots(timezone, date) {
       this.showSpinner = true;
       try {
@@ -160,7 +169,6 @@ export default {
   beforeMount() {
     this.picker = new Date().toISOString().substr(0, 10);
     this.userTimeZone = this.defaultTimezone;
-    // this.dateChange(this.picker)
   },
   watch: {
     pickerDate(newval, oldval) {
@@ -176,20 +184,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
+
+
+
 
 .time-slot-card {
   overflow: scroll;
@@ -198,8 +195,22 @@ a {
 .flexcard {
   display: flex;
   flex-direction: column;
-  width: 500px;
+  width: 450px;
   height: 250px;
+}
+
+.slot-caontainer{
+  padding: 1rem;
+}
+
+@media (max-width: 769px) {
+.flexcard {
+  display: flex;
+  flex-direction: column;
+  width: 350px;
+  height: 250px;
+  padding: 1rem;
+}
 }
 
 .flexcard .v-toolbar {

@@ -1,7 +1,7 @@
 
 
 # Appointment Booking Front End
-## To start the server
+## To start the client
 
   
 
