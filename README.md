@@ -1,4 +1,4 @@
-# Appoitment-Booking-MENV
+# Appoitment-Booking-MEVN Stack
 
 
 ## Table of contents
@@ -55,11 +55,7 @@ mevn start
 ```
 Select client and enter
 
-To stop your running server/client
-
-  
-
-  #### To run client and server concurrently 
+ #### To run client and server concurrently 
 
   
 
@@ -73,6 +69,12 @@ npm run dev
 ```
 
 
+
+To stop your running server/client
+
+  
+
+ 
 ```sh
 
 ctrl + c
