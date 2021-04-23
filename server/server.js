@@ -163,6 +163,16 @@ app.use("/events", events);
 
 app.use("/slots", slots);
 
+// Handle production
+if (process.env.NODE_ENV === 'production') {
+  // Static folder
+  app.use(express.static(__dirname + '/public/'));
+
+  // Handle SPA
+  app.get(/.*/, (req, res) => res.sendFile(__dirname + '/public/index.html'));
+}
+
+
 mongoose
   .connect(db, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, })
   .then(() => console.log("mongodb connected..."))
