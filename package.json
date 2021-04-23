@@ -9,7 +9,7 @@
     "install-client": "cd client && npm install",
     "install-server": "cd server && npm install", 
     "install-d": "npm run install-client && npm run install-server",
-    "heroku-postbuild": "npm run install-d && npm run build",
+    "heroku-postbuild": "npm run install-d ",
     "server": "npm start --prefix server",
     "build": "concurrently \"npm run build\" \"npm run client\"",
     "dev": "concurrently \"npm run server\" \"npm run client\""
