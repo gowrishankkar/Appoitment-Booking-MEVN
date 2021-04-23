@@ -5,15 +5,7 @@ import axios from "../../utils/axios";
 Vue.use(VueCookies);
 
 export default {
-  state() {
-    return {
-      message: "Vuex is working",
-      token: "",
-      error: null,
-      sucessMessage: null,
-      reviewMessage: null,
-    };
-  },
+  state() {},
   getters: {},
   mutations: {},
   actions: {
@@ -28,7 +20,7 @@ export default {
     },
     async createEvent({ commit }, payload) {
       try {
-        const response  = await axios.post(`events/`, payload);
+        const response = await axios.post(`events/`, payload);
         return response;
       } catch (err) {
         return err.response;
@@ -36,7 +28,10 @@ export default {
     },
     async getEventsInRange({ commit }, payload) {
       try {
-        const { data } = await axios.get(`events/range?startDate=${payload.startDate}&endDate=${payload.endDate}`, payload);
+        const { data } = await axios.get(
+          `events/range?startDate=${payload.startDate}&endDate=${payload.endDate}`,
+          payload
+        );
 
         return data;
       } catch (err) {

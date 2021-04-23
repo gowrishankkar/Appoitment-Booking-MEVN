@@ -1,5 +1,5 @@
 {
-  "name": "server-template",
+  "name": "server-appointment-booking",
   "version": "1.0.0",
   "description": "Express.js template",
   "main": "server.js",
@@ -21,6 +21,8 @@
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.33",
     "mongoose": "^5.8.3",
+    "swagger-jsdoc": "^6.0.0",
+    "swagger-ui-express": "^4.1.6",
     "time-slotter": "^1.0.10"
   },
   "devDependencies": {
