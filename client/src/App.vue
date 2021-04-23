@@ -1,8 +1,8 @@
 <template>
   <v-app id="app">
     <div id="nav">
-      <router-link to="/">Book</router-link> |
-      <router-link to="/events">All Events</router-link>
+      <router-link to="/">Book Event</router-link> |
+      <router-link to="/events">Show Events</router-link>
     </div>
     <router-view />
   </v-app>
@@ -26,6 +26,6 @@
 }
 
 #nav a.router-link-exact-active {
-  color: #42b983;
+  color: #1976d2;
 }
 </style>

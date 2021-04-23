@@ -1,7 +1,8 @@
 <template>
   <div>
-    <v-row class="">
-      <v-col cols="12" sm="6" md="4">
+    <v-row >
+      <v-col cols="12"  align="center">
+          <v-col cols="12" sm="6" md="4" >
         <v-menu
           ref="menu"
           v-model="menu"
@@ -37,6 +38,8 @@
           </v-date-picker>
         </v-menu>
       </v-col>
+      </v-col>
+    
     </v-row>
 
     <v-container>
@@ -58,7 +61,7 @@ import moment from "moment";
 import { mapActions, mapState } from "vuex";
 
 export default {
-  name: "Booking",
+  name: "Events",
   components: {},
   props: {
     msg: String,
@@ -85,6 +88,8 @@ export default {
 
   methods: {
     ...mapActions(["getAllEvents", "getEventsInRange"]),
+
+    // Fetch all the events in the selected range
     async getSelectedRange(dateRange) {
       if (dateRange.length == 2) {
         if (dateRange[0] > dateRange[1]) {
@@ -93,7 +98,7 @@ export default {
           dateRange[1] = startInRange;
         }
       }
-      console.log('dateRange', dateRange)
+
       try {
         const payload = {
           startDate: dateRange[0],
@@ -111,6 +116,8 @@ export default {
         console.log("error", error);
       }
     },
+
+    // Fetch All events
     async fetchAllEvents() {
       try {
         await this.getAllEvents().then((response) => {
