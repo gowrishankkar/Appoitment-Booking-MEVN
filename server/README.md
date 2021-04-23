@@ -2,6 +2,18 @@
 # RESTAPIDocs Appointment Booking
 
 
+## To start the server
+
+  
+
+```sh
+ 
+npm run serve  
+
+```
+  
+  
+  
 
 ## Endpoints
 
