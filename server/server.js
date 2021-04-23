@@ -45,22 +45,123 @@ const db = config.get("mongoURI");
 // Configure middlewares
 app.use(cors());
 
+// Swagger
+
+/**
+ * @swagger
+ * definitions:
+ *  Event:
+ *   type: object
+ *   properties:
+ *    Name:
+ *     type: string
+ *     description: name of the user
+ *     example: 'javscript'
+ *    Email:
+ *     type: string
+ *     description: email of the user
+ *     example: 'javascript@whizpath.com'
+ *    Timezone:
+ *     type: string
+ *     description: timezone of user
+ *     example: 'America/Los_Angeles'
+ *    Date:
+ *     type: date
+ *     description: timezone of user
+ *     example: '2020-08-30'
+ */
+
 //Routes
 /**
  * @swagger
  * /events:
  *  get:
- *    description: Use to request all events
+ *    summary: Get events in range
+ *    description: Request all events
  *    responses:
  *      '200':
  *        description: A successful response
  */
 
+/**
+ * @swagger
+ * /events/range?startDate=2021-04-13&endDate=2021-04-30:
+ *  get:
+ *   summary: Get events in range
+ *   description: get events in range
+ *   parameters:
+ *    - in: query
+ *      name: startDate
+ *      schema:
+ *       type: string
+ *      required: true
+ *      description: Start Date
+ *      example: 2021-04-13
+  *    - in: query
+ *      name: endDate
+ *      schema:
+ *       type: string
+ *      required: true
+ *      description: End Date
+ *      example: 2021-04-30
+ *   responses:
+ *    200:
+ *     description: success
+ */
+
+/**
+ * @swagger
+ * /events:
+ *  post:
+ *   summary: Create new event
+ *   description: Create new event appointment 
+
+ *   requestBody:
+ *    content:
+ *     application/json:
+ *      schema:
+ *       $ref: '#/definitions/Event'
+ *   responses:
+ *    200:
+ *     description: Event Created Successfully
+ *    500:
+ *     description: error
+ *    422:
+ *     description:Slot already booked
+ */
+
+
 app.use("/events", events);
+
+
+/**
+ * @swagger
+ * /slots?date=2021-04-01&timezone=Pacific/Rarotonga:
+ *  get:
+ *   summary: Get free slots
+ *   description: Get free slots on a given month and timezone
+ *   parameters:
+ *    - in: query
+ *      name: date
+ *      schema:
+ *       type: string
+ *      required: true
+ *      description: Selected Date
+ *      example: 2021-04-13
+  *    - in: query
+ *      name: timezone
+ *      schema:
+ *       type: string
+ *      required: true
+ *      description: Selected Timezone
+ *      example: Pacific/Rarotonga
+ *   responses:
+ *    200:
+ *     description: success
+ */
+
+
 app.use("/slots", slots);
-
-
-
 
 mongoose
   .connect(db, { useNewUrlParser: true, useUnifiedTopology: true })

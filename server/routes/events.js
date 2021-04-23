@@ -21,7 +21,7 @@ router.post("/", async (req, res) => {
       docs
     ) {
       if (docs != undefined && docs.length) {
-        res.status(422).json({ message: "This Slot is already booked" });
+        res.status(422).json({ message: "This slot is already booked" });
       } else {
         res.status(201).json({ message: "Event Booked Successfully" });
         event.save();
