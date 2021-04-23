@@ -1,45 +1,44 @@
 <template>
   <div>
-    <v-row >
-      <v-col cols="12"  align="center">
-          <v-col cols="12" sm="6" md="4" >
-        <v-menu
-          ref="menu"
-          v-model="menu"
-          :close-on-content-click="false"
-          :return-value.sync="date"
-          transition="scale-transition"
-          offset-y
-          min-width="auto"
-        >
-          <template v-slot:activator="{ on, attrs }">
-            <v-text-field
-              v-model="date"
-              label="Picker in menu"
-              prepend-icon="mdi-calendar"
-              readonly
-              v-bind="attrs"
-              v-on="on"
-            ></v-text-field>
-          </template>
-          <v-date-picker v-model="date" no-title range scrollable>
-            <v-spacer></v-spacer>
-            <v-btn text color="primary" @click="menu = false"> Cancel </v-btn>
-            <v-btn
-              text
-              color="primary"
-              @click="
-                $refs.menu.save(date);
-                getSelectedRange(date);
-              "
-            >
-              OK
-            </v-btn>
-          </v-date-picker>
-        </v-menu>
+    <v-row>
+      <v-col cols="12" align="center">
+        <v-col cols="12" sm="6" md="4">
+          <v-menu
+            ref="menu"
+            v-model="menu"
+            :close-on-content-click="false"
+            :return-value.sync="date"
+            transition="scale-transition"
+            offset-y
+            min-width="auto"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-text-field
+                v-model="date"
+                label="Picker in menu"
+                prepend-icon="mdi-calendar"
+                readonly
+                v-bind="attrs"
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-date-picker v-model="date" no-title range scrollable>
+              <v-spacer></v-spacer>
+              <v-btn text color="primary" @click="menu = false"> Cancel </v-btn>
+              <v-btn
+                text
+                color="primary"
+                @click="
+                  $refs.menu.save(date);
+                  getSelectedRange(date);
+                "
+              >
+                OK
+              </v-btn>
+            </v-date-picker>
+          </v-menu>
+        </v-col>
       </v-col>
-      </v-col>
-    
     </v-row>
 
     <v-container>
@@ -99,39 +98,31 @@ export default {
         }
       }
 
-      try {
-        const payload = {
-          startDate: dateRange[0],
-          endDate: dateRange[1] ? dateRange[1] : dateRange[0],
-        };
-        await this.getEventsInRange(payload).then((response) => {
-          response.map((event, index) => {
-            event.date = moment(event.Date).format("DD-MM-YYYY");
-            event.time = moment(event.Date).format("hh:mm A");
-            event.rowIndex = index;
-          });
-          this.events = response;
+      const payload = {
+        startDate: dateRange[0],
+        endDate: dateRange[1] ? dateRange[1] : dateRange[0],
+      };
+      await this.getEventsInRange(payload).then((response) => {
+        response.map((event, index) => {
+          event.date = moment(event.Date).format("DD-MM-YYYY");
+          event.time = moment(event.Date).format("hh:mm A");
+          event.rowIndex = index;
         });
-      } catch (error) {
-        console.log("error", error);
-      }
+        this.events = response;
+      });
     },
 
     // Fetch All events
     async fetchAllEvents() {
-      try {
-        await this.getAllEvents().then((response) => {
-          response.map((event, index) => {
-            event.date = moment(event.Date).format("DD-MM-YYYY");
-            event.time = moment(event.Date).format("hh:mm A");
-            event.rowIndex = index;
-          });
-          this.$forceUpdate();
-          this.events = response;
+      await this.getAllEvents().then((response) => {
+        response.map((event, index) => {
+          event.date = moment(event.Date).format("DD-MM-YYYY");
+          event.time = moment(event.Date).format("hh:mm A");
+          event.rowIndex = index;
         });
-      } catch (error) {
-        console.log("error", error);
-      }
+        this.$forceUpdate();
+        this.events = response;
+      });
     },
   },
 };

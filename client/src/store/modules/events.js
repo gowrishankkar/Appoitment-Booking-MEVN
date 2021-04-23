@@ -14,7 +14,6 @@ export default {
         const { data } = await axios.get(`events/`);
         return data;
       } catch (err) {
-        console.log("err", err);
         return err;
       }
     },
@@ -35,7 +34,6 @@ export default {
 
         return data;
       } catch (err) {
-        console.log("err", err);
         return err;
       }
     },

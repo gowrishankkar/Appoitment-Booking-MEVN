@@ -21,7 +21,6 @@ export default {
         const { data } = await axios.get(`slots?date=${payload.date}&timezone=${payload.timezone}`);
         return data;
       } catch (err) {
-        console.log("err", err);
         return err;
       }
 

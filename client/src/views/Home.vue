@@ -35,9 +35,8 @@
           prev-icon=" mdi-arrow-left"
         ></v-date-picker>
 
-
-        <div  class="slot-caontainer">
-          <v-sheet elevation="10" rounded="xl" >
+        <div class="slot-caontainer">
+          <v-sheet elevation="10" rounded="xl">
             <v-sheet class="pa-1 primary text-right" dark rounded="t-xl"
               ><v-card-title>Available Slots</v-card-title>
             </v-sheet>
@@ -128,7 +127,7 @@ export default {
       this.$forceUpdate();
     },
 
-    // Sets the selected slot 
+    // Sets the selected slot
     selectTime(time) {
       this.timeSelection = this.freeSlots[this.picker].slots[time];
     },
@@ -148,19 +147,15 @@ export default {
     // Fetch all the free slot for the selected month
     async getFreeSlots(timezone, date) {
       this.showSpinner = true;
-      try {
-        let payload = {
-          date: date,
-          timezone: timezone,
-        };
-        await this.getSlots(payload).then((response) => {
-          this.freeSlots = response;
-          this.slotDates = Object.keys(response);
-          this.showSpinner = false;
-        });
-      } catch (error) {
-        console.log("error", error);
-      }
+      let payload = {
+        date: date,
+        timezone: timezone,
+      };
+      await this.getSlots(payload).then((response) => {
+        this.freeSlots = response;
+        this.slotDates = Object.keys(response);
+        this.showSpinner = false;
+      });
       this.dateChange(this.picker);
       this.$forceUpdate();
     },
@@ -184,10 +179,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
-
-
-
 .time-slot-card {
   overflow: scroll;
 }
@@ -199,18 +190,18 @@ export default {
   height: 250px;
 }
 
-.slot-caontainer{
+.slot-caontainer {
   padding: 1rem;
 }
 
 @media (max-width: 769px) {
-.flexcard {
-  display: flex;
-  flex-direction: column;
-  width: 350px;
-  height: 250px;
-  padding: 1rem;
-}
+  .flexcard {
+    display: flex;
+    flex-direction: column;
+    width: 350px;
+    height: 250px;
+    padding: 1rem;
+  }
 }
 
 .flexcard .v-toolbar {
