@@ -7,11 +7,8 @@
     "start": "node server/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "client": "npm run serve --prefix client",
-    "install-client": "npm install --prefix client",
-    "install-server": "npm install --prefix server", 
     "build-client": "npm run build --prefix client",
-    "install-d": "npm run install-client && npm run install-server",
-    "heroku-postbuild": "npm run install-d ",
+    "heroku-postbuild": "npm install && npm install --prefix client && npm install --prefix server ",
     "build": "concurrently \"npm run build --prefix client\" \"npm run server\"",
     "server": "npm start --prefix server",
     "dev": "concurrently \"npm run server\" \"npm run client\""
