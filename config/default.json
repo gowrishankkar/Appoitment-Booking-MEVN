@@ -1,0 +1,8 @@
+{
+    "mongoURI":
+    "mongodb+srv://gowri_shankar:1cgowrishankar@clustermt.ryvpa.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+    "startTime" : "10:00",
+    "endTime" : "17:00",
+    "slotDuration" : 30,
+    "fixedTimezone" : "America/Los_Angeles"
+}

@@ -5,7 +5,10 @@ import VueCookies from 'vue-cookies'
 Vue.use(VueCookies)
 
 const base = axios.create({
-  baseURL: `${process.env.VUE_APP_HTTP}${process.env.VUE_APP_ENV_URL}`,
+  baseURL: `api/`,
+
+  // For local
+  // baseURL: `${process.env.VUE_APP_HTTP}${process.env.VUE_APP_ENV_URL}`,
   // baseURL: 'http://localhost:8081/',
 })
 

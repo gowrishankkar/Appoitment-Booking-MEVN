@@ -1,29 +1,37 @@
 {
-  "name": "appoitment-booking-menv-",
+  "name": "server-appointment-booking",
   "version": "1.0.0",
-  "description": "-  [Quick start](#quick-start)",
-  "main": "index.js",
+  "description": "Express.js template",
+  "main": "server.js",
   "scripts": {
-    "start": "node server/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "serve": "nodemon server.js",
     "client": "npm run serve --prefix client",
-    "build-client": "npm run build --prefix client",
-    "heroku-postbuild": "npm install && npm install --prefix client && npm install --prefix server ",
-    "build": "concurrently \"npm run build --prefix client\" \"npm run server\"",
-    "server": "npm start --prefix server",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "format": "prettier server.js **/*.js --write",
+    "client-install": "cd client && npm install",
+    "install-all": "npm install &&  npm run client-install",
+    "heroku-postbuild": "npm run install-all",
+    "dev": "concurrently \"npm run serve\" \"npm run client\""
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/gowrishankkar/Appoitment-Booking-MENV-.git"
-  },
-  "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/gowrishankkar/Appoitment-Booking-MENV-/issues"
-  },
-  "homepage": "https://github.com/gowrishankkar/Appoitment-Booking-MENV-#readme",
   "dependencies": {
-    "concurrently": "^6.0.2"
+    "body-parser": "^1.19.0",
+    "circular-json": "^0.5.9",
+    "concurrently": "^5.0.2",
+    "config": "^3.3.6",
+    "cors": "^2.8.4",
+    "dates-between": "^1.1.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.16.3",
+    "moment": "^2.29.1",
+    "moment-timezone": "^0.5.33",
+    "mongoose": "^5.8.3",
+    "swagger-jsdoc": "^6.0.0",
+    "swagger-ui-express": "^4.1.6",
+    "time-slotter": "^1.0.10"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.3",
+    "prettier": "^2.0.5"
   }
 }
