@@ -21,39 +21,29 @@ Used MEVN-CLI for quick setup.
 
  #### Installation of packages
    
-   For server side
+   For installing both server side and client side modules
 
 ```sh
 
-cd server
-npm i
+npm run install-all
 
 ```
-   For Client side
 
-```sh
-
-cd client
-npm i
-
-```
  #### Start server
 
 ```sh
 
-mevn start
+npm run serve
 
 ```
-Select server and enter
 
  #### Start client
 
 ```sh
 
-mevn start
+npm run client
 
 ```
-Select client and enter
 
  #### To run client and server concurrently 
 
@@ -62,8 +52,6 @@ Select client and enter
 ```sh
 
   
-
-npm install
 
 npm run dev
 ```
@@ -87,7 +75,7 @@ ctrl + c
   
 
 Here goes all API's
-*  [API endpoints](/server/README.md) 
+*  [API endpoints](API.md) 
 
   
 
