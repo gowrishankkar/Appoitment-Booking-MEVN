@@ -8,22 +8,20 @@ let timeSlotter = require("time-slotter");
 
 const router = express.Router();
 
-
 // Get config data
 const startTime = config.get("startTime");
 const endTime = config.get("endTime");
 const slotDuration = config.get("slotDuration");
 const FixedTimezone = config.get("fixedTimezone");
 
-
 // Get free slots
 router.get("/", async (req, res) => {
   let date = req.query.date;
   let timezone = req.query.timezone;
-  let slotter = timeSlotter(startTime, endTime , slotDuration);
+  let slotter = timeSlotter(startTime, endTime, slotDuration);
   let timeSlots = [];
   let freeSlots = {};
-  
+
   slotter.map((time) => {
     timeSlots.push(time[0]);
   });
@@ -57,7 +55,6 @@ router.get("/", async (req, res) => {
       bookedSlots.push(changedBookEvent);
     });
 
-
     // Loop through dates that have no weekends
     for (const date of daysWithOutWeekEnd) {
       let allSlots = [];
@@ -68,12 +65,14 @@ router.get("/", async (req, res) => {
         let changeSlot = momentTZ
           .tz(slotT, FixedTimezone)
           .format("YYYY-MM-DD hh:mm A");
-        if (!bookedSlots.includes(changeSlot)) {
+        if (bookedSlots.includes(changeSlot)) {
+          console.log("dadte exists!", changeSlot);
+        } else {
           let userSlot = momentTZ
             .tz(slotT, timezone)
             .format("YYYY-MM-DD hh:mm A");
 
-            // Check if the slot is already present
+          // Check if the slot is already present
           if (
             freeSlots.hasOwnProperty(moment(userSlot).format("YYYY-MM-DD")) &&
             userSlot
