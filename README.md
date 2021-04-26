@@ -87,20 +87,6 @@ Here goes all API's
 With your local server running, the generated docs are available here: [http://localhost:9001/api-docs](http://localhost:9001/api-docs)
   
 
-Structure
-
-  
-
-```text
-
-/
-
-└── client/
-
-├── server/
-
-
-```
 
   
 
