@@ -7,8 +7,10 @@ const Event = require("../models/events");
 
 // Create Event
 router.post("/", async (req, res) => {
-  let formattedDate = moment(new Date(req.body.Date), "YYYY/MM/DD hh:mm A").toISOString();
-  console.log(req.body.Date, 'formattedDate', formattedDate)
+  let formattedDate = moment(
+    new Date(req.body.Date),
+    "YYYY/MM/DD hh:mm A"
+  ).toISOString();
   const event = new Event({
     Date: req.body.Date,
     Timezone: req.body.Timezone,
@@ -17,7 +19,6 @@ router.post("/", async (req, res) => {
   });
 
   try {
-  
     const newEvent = await Event.find({ Date: formattedDate }).exec(function (
       err,
       docs
@@ -34,7 +35,6 @@ router.post("/", async (req, res) => {
   }
 });
 
-
 // Get all events
 router.get("/", async (req, res) => {
   try {
@@ -44,7 +44,6 @@ router.get("/", async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 });
-
 
 // Get events in range
 router.get("/range/", async (req, res) => {
@@ -59,7 +58,7 @@ router.get("/range/", async (req, res) => {
         message: "Please ensure you pick two dates",
       });
     }
-    
+
     endDate = moment(endDate).set("hour", 20).toISOString();
 
     const event = await Event.find({

@@ -61,7 +61,6 @@ import { validationMixin } from "vuelidate";
 import { required, maxLength, email } from "vuelidate/lib/validators";
 import { mapActions, mapState } from "vuex";
 
-
 export default {
   props: ["timeChip", "timeZone"],
 
@@ -74,7 +73,6 @@ export default {
 
   watch: {
     timeChip(selectedDateTime) {
-      // console.log('selectedDateTime', selectedDateTime)
       this.selectedTime = moment(selectedDateTime).format("hh:mm A");
       this.selectedDate = moment(selectedDateTime).format("ddd, DD MMMM YYYY");
       if (selectedDateTime) {
@@ -104,7 +102,9 @@ export default {
       selectedTime: "",
     };
   },
-
+  mounted() {
+    this.clear();
+  },
   methods: {
     ...mapActions(["createEvent"]),
     submit() {
@@ -118,16 +118,13 @@ export default {
       }
     },
     clear() {
-
       this.$v.$reset();
       this.name = "";
       this.email = "";
     },
     async createEventFn(name, email) {
-      // let dateas = moment(this.timeChip).valueOf()
-       let dateas = moment(this.timeChip)
-      let cDate = dateas.tz("America/Los_Angeles").format("YYYY-MM-DD hh:mm A")
-      // console.log('sd', cDate)
+      let dateas = moment(this.timeChip);
+      let cDate = dateas.tz("America/Los_Angeles").format("YYYY-MM-DD hh:mm A");
       let body = {
         Date: cDate,
         Timezone: this.timeZone,
@@ -136,9 +133,15 @@ export default {
       };
       try {
         await this.createEvent(body).then((response) => {
-          this.dialog = false;
-          this.$parent.getFreeSlots(this.timeZone, cDate);
-          this.clear();
+          if (response.status == 201) {
+            this.dialog = false;
+            this.$parent.getFreeSlots(
+              this.timeZone,
+              moment(this.timeChip).format("YYYY-MM-DD")
+            );
+            this.clear();
+          }
+
           this.showToaster(response.data.message);
         });
       } catch (error) {

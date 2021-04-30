@@ -28,7 +28,6 @@
           v-model="picker"
           :picker-date.sync="pickerDate"
           @change="dateChange($event)"
-          
           elevation="15"
           :min="presentDate"
           next-icon="mdi-arrow-right"
@@ -96,7 +95,7 @@ export default {
       userTimeZone: "",
       defaultTimezone: "America/Los_Angeles",
       presentDate: new Date().toISOString().substr(0, 10),
-      picker: new Date().toISOString().substr(0, 10),
+      picker: '',
       pickerDate: null,
       slotDates: [],
       freeSlots: {},
@@ -130,36 +129,21 @@ export default {
 
     // Sets the selected slot
     selectTime(time) {
-      // console.log(time, this.slots[time])
-
       this.timeSelection = this.freeSlots[time];
-      // console.log('sdsd', moment("2021-04-29T18:30:00.000+00:00").format("YYYY-MM-DD hh:mm A"))
-      //  console.log(moment(this.timeSelection).format("YYYY-MM-DD hh:mm A"),'this.timeChip', this.timeSelection)
-      let dateas = moment(this.timeSelection)
-      
-      // console.log('asd', dateas.tz("America/Los_Angeles").format("YYYY-MM-DD hh:mm A"))
-      
-      // this.$refs["modal"].clear();
     },
 
     // Triggered during date change
     async dateChange(date) {
       this.slots = [];
+      this.timeSelection = "";
       this.picker = date;
       this.getFreeSlots(this.userTimeZone, this.picker);
       this.timeChip = "";
-      
-      // if (this.freeSlots[this.picker]) {
-      //   this.freeSlots[this.picker].slots.map(async (slot) => {
-      //     await this.slots.push(moment(slot).format("hh:mm A"));
-      //   });
-      // }
     },
 
     // Fetch all the free slot for the selected month
     async getFreeSlots(timezone, date) {
-     
-
+      this.timeChip = "";
       this.showSpinner = true;
       let payload = {
         date: date,
@@ -167,7 +151,7 @@ export default {
       };
       await this.getSlots(payload).then((response) => {
         this.freeSlots = response;
-         this.slots = [];
+        this.slots = [];
         response.map(async (slot) => {
           await this.slots.push(moment(slot).format("hh:mm A"));
         });
@@ -178,18 +162,18 @@ export default {
       this.$forceUpdate();
     },
   },
-
-  beforeMount() {
-    this.picker = new Date().toISOString().substr(0, 10);
+  
+  mounted() {
+    this.picker = this.presentDate;
     this.userTimeZone = this.defaultTimezone;
+    this.getFreeSlots(this.userTimeZone, this.picker);
   },
   watch: {
     pickerDate(newval, oldval) {
       this.slots = [];
       this.timeSelection = "";
-      this.picker = `${newval}-01`;
-      this.getFreeSlots(this.userTimeZone, this.picker);
-      this.dateChange(this.picker);
+      // this.picker = `${newval}-01`;
+     
     },
   },
 };
