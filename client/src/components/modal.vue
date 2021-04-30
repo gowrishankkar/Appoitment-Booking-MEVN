@@ -55,10 +55,11 @@
 </template>
 
 <script>
+import moment from "moment";
+import momenTZ from "moment-timezone";
 import { validationMixin } from "vuelidate";
 import { required, maxLength, email } from "vuelidate/lib/validators";
 import { mapActions, mapState } from "vuex";
-import moment from "moment";
 
 export default {
   props: ["timeChip", "timeZone"],
@@ -66,7 +67,7 @@ export default {
   mixins: [validationMixin],
 
   validations: {
-    name: { required, maxLength: maxLength(10) },
+    name: { required, maxLength: maxLength(30) },
     email: { required, email },
   },
 
@@ -101,7 +102,9 @@ export default {
       selectedTime: "",
     };
   },
-
+  mounted() {
+    this.clear();
+  },
   methods: {
     ...mapActions(["createEvent"]),
     submit() {
@@ -120,17 +123,25 @@ export default {
       this.email = "";
     },
     async createEventFn(name, email) {
+      let dateas = moment(this.timeChip);
+      let cDate = dateas.tz("America/Los_Angeles").format("YYYY-MM-DD hh:mm A");
       let body = {
-        Date: moment(this.timeChip).format(),
+        Date: cDate,
         Timezone: this.timeZone,
         Name: name,
         Email: email,
       };
       try {
         await this.createEvent(body).then((response) => {
-          this.dialog = false;
-          this.$parent.getFreeSlots(this.timeZone, this.timeChip);
-          this.clear();
+          if (response.status == 201) {
+            this.dialog = false;
+            this.$parent.getFreeSlots(
+              this.timeZone,
+              moment(this.timeChip).format("YYYY-MM-DD")
+            );
+            this.clear();
+          }
+
           this.showToaster(response.data.message);
         });
       } catch (error) {

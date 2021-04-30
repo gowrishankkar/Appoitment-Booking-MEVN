@@ -20,7 +20,7 @@ router.get("/", async (req, res) => {
   let timezone = req.query.timezone;
   let slotter = timeSlotter(startTime, endTime, slotDuration);
   let timeSlots = [];
-  let freeSlots = {};
+  let freeSlots = [];
 
   slotter.map((time) => {
     timeSlots.push(time[0]);
@@ -44,49 +44,72 @@ router.get("/", async (req, res) => {
   }
 
   try {
+    let startDate = moment.utc(date);
+    let endDate = date;
+    endDate = moment.utc(endDate).set({ hour: 23, minute: 59 });
     const allEvent = await Event.find();
+
+    // Fetch data for that specific date
+    // const allEvent = await Event.find({
+    //   Date: {
+    //     $gte: startDate,
+    //     $lt: endDate,
+    //   },
+    // }).sort({ date_paid: "asc" });
     let bookedSlots = [];
 
     // Gets all events and push date into array
     allEvent.map((bookedEvent) => {
       let changedBookEvent = moment(bookedEvent.Date).format(
-        "YYYY-MM-DD hh:mm A"
+        "YYYY-MM-DD HH:mm:ss"
       );
       bookedSlots.push(changedBookEvent);
     });
 
     // Loop through dates that have no weekends
     for (const date of daysWithOutWeekEnd) {
-      let allSlots = [];
       await timeSlots.map(async (slot, i) => {
         let splitSlot = slot.split(":");
-        let slotT = moment(date.setHours(splitSlot[0], splitSlot[1], 0));
 
-        let changeSlot = momentTZ
-          .tz(slotT, FixedTimezone)
-          .format("YYYY-MM-DD hh:mm A");
-        if (bookedSlots.includes(changeSlot)) {
-          console.log("dadte exists!", changeSlot);
+        let changedate2 = moment.utc(date);
+        let converteddate = changedate2.tz(FixedTimezone);
+        changedate2.set({
+          hour: splitSlot[0],
+          minute: splitSlot[1],
+          second: 0,
+        });
+
+        let slotT = moment(converteddate).valueOf();
+        if (
+          bookedSlots.includes(
+            moment(changedate2).format("YYYY-MM-DD HH:mm:ss")
+          )
+        ) {
+          console.log(
+            "dadte exists!",
+            moment(slotT).format("YYYY-MM-DD HH:mm:ss")
+          );
         } else {
-          let userSlot = momentTZ
-            .tz(slotT, timezone)
-            .format("YYYY-MM-DD hh:mm A");
-
+          var june = moment(slotT);
+          let userSlot = june.tz(timezone).valueOf();
           // Check if the slot is already present
           if (
             freeSlots.hasOwnProperty(moment(userSlot).format("YYYY-MM-DD")) &&
             userSlot
           ) {
-            await freeSlots[moment(userSlot).format("YYYY-MM-DD")].slots.push(
-              userSlot
+            await freeSlots[moment(userSlot).format("YYYY-MM-DD")].push(
+              moment(userSlot).format()
             );
           } else {
-            freeSlots[moment(userSlot).format("YYYY-MM-DD")] = { slots: [] };
+            freeSlots[moment(userSlot).format("YYYY-MM-DD")] = [];
+            await freeSlots[moment(userSlot).format("YYYY-MM-DD")].push(
+              moment(userSlot).format()
+            );
           }
         }
       });
     }
-    res.send(freeSlots);
+    res.send(freeSlots[date] ? freeSlots[date] : []);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

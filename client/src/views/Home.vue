@@ -28,7 +28,6 @@
           v-model="picker"
           :picker-date.sync="pickerDate"
           @change="dateChange($event)"
-          :allowed-dates="getAllowedDates"
           elevation="15"
           :min="presentDate"
           next-icon="mdi-arrow-right"
@@ -77,6 +76,7 @@
 <script>
 import Modal from "@/components/modal.vue";
 import moment from "moment";
+import momenTZ from "moment-timezone";
 import { getTimeZones, rawTimeZones, timeZonesNames } from "@vvo/tzdb";
 const timeZones = getTimeZones();
 import { mapActions, mapState } from "vuex";
@@ -95,7 +95,7 @@ export default {
       userTimeZone: "",
       defaultTimezone: "America/Los_Angeles",
       presentDate: new Date().toISOString().substr(0, 10),
-      picker: new Date().toISOString().substr(0, 10),
+      picker: '',
       pickerDate: null,
       slotDates: [],
       freeSlots: {},
@@ -129,23 +129,21 @@ export default {
 
     // Sets the selected slot
     selectTime(time) {
-      this.timeSelection = this.freeSlots[this.picker].slots[time];
+      this.timeSelection = this.freeSlots[time];
     },
 
     // Triggered during date change
-    dateChange(date) {
-      this.picker = date;
-      this.timeChip = "";
+    async dateChange(date) {
       this.slots = [];
-      if (this.freeSlots[this.picker]) {
-        this.freeSlots[this.picker].slots.map(async (slot) => {
-          await this.slots.push(moment(slot).format("hh:mm A"));
-        });
-      }
+      this.timeSelection = "";
+      this.picker = date;
+      this.getFreeSlots(this.userTimeZone, this.picker);
+      this.timeChip = "";
     },
 
     // Fetch all the free slot for the selected month
     async getFreeSlots(timezone, date) {
+      this.timeChip = "";
       this.showSpinner = true;
       let payload = {
         date: date,
@@ -153,25 +151,29 @@ export default {
       };
       await this.getSlots(payload).then((response) => {
         this.freeSlots = response;
-        this.slotDates = Object.keys(response);
+        this.slots = [];
+        response.map(async (slot) => {
+          await this.slots.push(moment(slot).format("hh:mm A"));
+        });
+
         this.showSpinner = false;
       });
-      this.dateChange(this.picker);
+      // this.dateChange(this.picker);
       this.$forceUpdate();
     },
   },
-
-  beforeMount() {
-    this.picker = new Date().toISOString().substr(0, 10);
+  
+  mounted() {
+    this.picker = this.presentDate;
     this.userTimeZone = this.defaultTimezone;
+    this.getFreeSlots(this.userTimeZone, this.picker);
   },
   watch: {
     pickerDate(newval, oldval) {
       this.slots = [];
       this.timeSelection = "";
-      this.picker = `${newval}-01`;
-      this.getFreeSlots(this.userTimeZone, this.picker);
-      this.dateChange(this.picker);
+      // this.picker = `${newval}-01`;
+     
     },
   },
 };

@@ -172,11 +172,19 @@ if (process.env.NODE_ENV === 'production') {
   app.get(/.*/, (req, res) => res.sendFile(__dirname + '/public/index.html'));
 }
 
-
-mongoose
+if(process.env.MONGODB_URI) {
+  mongoose.connect(process.env.MONGODB_URI);
+ 
+ }else {
+ 
+  mongoose
   .connect(db, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, })
   .then(() => console.log("mongodb connected..."))
   .catch((err) => console.log("MongoError:", err));
+ }
+
+
+
 
 // Configuring port
 const port = process.env.PORT || 9001;
