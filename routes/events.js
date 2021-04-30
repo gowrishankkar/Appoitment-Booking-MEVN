@@ -7,15 +7,17 @@ const Event = require("../models/events");
 
 // Create Event
 router.post("/", async (req, res) => {
-  let formattedDate = moment.tz(req.body.Date, "America/Los_Angeles").format();
+  // let formattedDate = moment(new Date(req.body.Date), "YYYY/MM/DD hh:mm A").toISOString();
+  // console.log(req.body.Date, 'formattedDate', formattedDate)
   const event = new Event({
-    Date: formattedDate,
+    Date: req.body.Date,
     Timezone: req.body.Timezone,
     Name: req.body.Name,
     Email: req.body.Email,
   });
 
   try {
+  
     const newEvent = await Event.find({ Date: formattedDate }).exec(function (
       err,
       docs

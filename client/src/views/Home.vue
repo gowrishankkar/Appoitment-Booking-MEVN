@@ -28,7 +28,7 @@
           v-model="picker"
           :picker-date.sync="pickerDate"
           @change="dateChange($event)"
-          :allowed-dates="getAllowedDates"
+          
           elevation="15"
           :min="presentDate"
           next-icon="mdi-arrow-right"
@@ -77,6 +77,7 @@
 <script>
 import Modal from "@/components/modal.vue";
 import moment from "moment";
+import momenTZ from "moment-timezone";
 import { getTimeZones, rawTimeZones, timeZonesNames } from "@vvo/tzdb";
 const timeZones = getTimeZones();
 import { mapActions, mapState } from "vuex";
@@ -129,23 +130,36 @@ export default {
 
     // Sets the selected slot
     selectTime(time) {
-      this.timeSelection = this.freeSlots[this.picker].slots[time];
+      // console.log(time, this.slots[time])
+
+      this.timeSelection = this.freeSlots.freeSlots[time];
+      // console.log('sdsd', moment("2021-04-29T18:30:00.000+00:00").format("YYYY-MM-DD hh:mm A"))
+       console.log(moment(this.timeSelection).format("YYYY-MM-DD hh:mm A"),'this.timeChip', this.timeSelection)
+      let dateas = moment(this.timeSelection)
+      
+      console.log('asd', dateas.tz("America/Los_Angeles").format("YYYY-MM-DD hh:mm A"))
+      
+      // this.$refs["modal"].clear();
     },
 
     // Triggered during date change
-    dateChange(date) {
-      this.picker = date;
-      this.timeChip = "";
+    async dateChange(date) {
       this.slots = [];
-      if (this.freeSlots[this.picker]) {
-        this.freeSlots[this.picker].slots.map(async (slot) => {
-          await this.slots.push(moment(slot).format("hh:mm A"));
-        });
-      }
+      this.picker = date;
+      this.getFreeSlots(this.userTimeZone, this.picker);
+      this.timeChip = "";
+      
+      // if (this.freeSlots[this.picker]) {
+      //   this.freeSlots[this.picker].slots.map(async (slot) => {
+      //     await this.slots.push(moment(slot).format("hh:mm A"));
+      //   });
+      // }
     },
 
     // Fetch all the free slot for the selected month
     async getFreeSlots(timezone, date) {
+     
+      console.log('timezone, date', timezone, date)
       this.showSpinner = true;
       let payload = {
         date: date,
@@ -153,10 +167,16 @@ export default {
       };
       await this.getSlots(payload).then((response) => {
         this.freeSlots = response;
-        this.slotDates = Object.keys(response);
+         this.slots = [];
+        response.map(async (slot) => {
+          await this.slots.push(moment(slot).format("hh:mm A"));
+        });
+
+        // console.log('slotDates', this.slotDates)
+        // this.slotDates = Object.keys(response.daysWithOutWeekEnd);
         this.showSpinner = false;
       });
-      this.dateChange(this.picker);
+      // this.dateChange(this.picker);
       this.$forceUpdate();
     },
   },
