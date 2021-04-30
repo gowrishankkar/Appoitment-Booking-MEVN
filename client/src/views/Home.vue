@@ -80,6 +80,7 @@ import momenTZ from "moment-timezone";
 import { getTimeZones, rawTimeZones, timeZonesNames } from "@vvo/tzdb";
 const timeZones = getTimeZones();
 import { mapActions, mapState } from "vuex";
+import { DEFAULT_TIMEZONE } from '../components/config/constants';
 
 export default {
   name: "Booking",
@@ -93,7 +94,7 @@ export default {
       searchInput: "",
       timeZoneDateset: timeZones,
       userTimeZone: "",
-      defaultTimezone: "America/Los_Angeles",
+      defaultTimezone: DEFAULT_TIMEZONE,
       presentDate: new Date().toISOString().substr(0, 10),
       picker: '',
       pickerDate: null,
@@ -129,6 +130,7 @@ export default {
 
     // Sets the selected slot
     selectTime(time) {
+      
       this.timeSelection = this.freeSlots[time];
     },
 

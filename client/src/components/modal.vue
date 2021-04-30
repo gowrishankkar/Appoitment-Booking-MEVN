@@ -60,6 +60,7 @@ import momenTZ from "moment-timezone";
 import { validationMixin } from "vuelidate";
 import { required, maxLength, email } from "vuelidate/lib/validators";
 import { mapActions, mapState } from "vuex";
+import { DEFAULT_TIMEZONE } from '../components/config/constants';
 
 export default {
   props: ["timeChip", "timeZone"],
@@ -97,6 +98,7 @@ export default {
       name: "",
       email: "",
       showSnackbar: false,
+      defaultTimezone: DEFAULT_TIMEZONE,
       snackBarText: ``,
       selectedDate: "",
       selectedTime: "",
@@ -123,8 +125,8 @@ export default {
       this.email = "";
     },
     async createEventFn(name, email) {
-      let dateas = moment(this.timeChip);
-      let cDate = dateas.tz("America/Los_Angeles").format("YYYY-MM-DD hh:mm A");
+      let mChip = moment(this.timeChip);
+      let cDate = mChip.tz(this.defaultTimezone).format("YYYY-MM-DD hh:mm A");
       let body = {
         Date: cDate,
         Timezone: this.timeZone,
