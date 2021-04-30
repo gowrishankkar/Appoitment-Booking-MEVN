@@ -74,7 +74,7 @@ export default {
 
   watch: {
     timeChip(selectedDateTime) {
-      console.log('selectedDateTime', selectedDateTime)
+      // console.log('selectedDateTime', selectedDateTime)
       this.selectedTime = moment(selectedDateTime).format("hh:mm A");
       this.selectedDate = moment(selectedDateTime).format("ddd, DD MMMM YYYY");
       if (selectedDateTime) {
@@ -127,7 +127,7 @@ export default {
       // let dateas = moment(this.timeChip).valueOf()
        let dateas = moment(this.timeChip)
       let cDate = dateas.tz("America/Los_Angeles").format("YYYY-MM-DD hh:mm A")
-      console.log('sd', cDate)
+      // console.log('sd', cDate)
       let body = {
         Date: cDate,
         Timezone: this.timeZone,

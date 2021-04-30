@@ -134,10 +134,10 @@ export default {
 
       this.timeSelection = this.freeSlots.freeSlots[time];
       // console.log('sdsd', moment("2021-04-29T18:30:00.000+00:00").format("YYYY-MM-DD hh:mm A"))
-       console.log(moment(this.timeSelection).format("YYYY-MM-DD hh:mm A"),'this.timeChip', this.timeSelection)
+      //  console.log(moment(this.timeSelection).format("YYYY-MM-DD hh:mm A"),'this.timeChip', this.timeSelection)
       let dateas = moment(this.timeSelection)
       
-      console.log('asd', dateas.tz("America/Los_Angeles").format("YYYY-MM-DD hh:mm A"))
+      // console.log('asd', dateas.tz("America/Los_Angeles").format("YYYY-MM-DD hh:mm A"))
       
       // this.$refs["modal"].clear();
     },
@@ -159,7 +159,7 @@ export default {
     // Fetch all the free slot for the selected month
     async getFreeSlots(timezone, date) {
      
-      console.log('timezone, date', timezone, date)
+
       this.showSpinner = true;
       let payload = {
         date: date,
@@ -172,8 +172,6 @@ export default {
           await this.slots.push(moment(slot).format("hh:mm A"));
         });
 
-        // console.log('slotDates', this.slotDates)
-        // this.slotDates = Object.keys(response.daysWithOutWeekEnd);
         this.showSpinner = false;
       });
       // this.dateChange(this.picker);
