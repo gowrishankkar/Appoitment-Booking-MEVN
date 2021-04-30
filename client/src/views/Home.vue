@@ -132,7 +132,7 @@ export default {
     selectTime(time) {
       // console.log(time, this.slots[time])
 
-      this.timeSelection = this.freeSlots.freeSlots[time];
+      this.timeSelection = this.freeSlots[time];
       // console.log('sdsd', moment("2021-04-29T18:30:00.000+00:00").format("YYYY-MM-DD hh:mm A"))
       //  console.log(moment(this.timeSelection).format("YYYY-MM-DD hh:mm A"),'this.timeChip', this.timeSelection)
       let dateas = moment(this.timeSelection)
